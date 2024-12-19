@@ -1,0 +1,119 @@
+"use client"
+import React from 'react'
+import { useState } from 'react'
+import ToolTip from '../ToolTip'
+import { LayoutGrid, List } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import FileItem from './FileItem'
+import { Skeleton } from '@/components/ui/skeleton'
+import DetailBar from '../DetailBar'
+import GifNew from '../GifNew'
+
+const FileList = ({data, loading, error, success}) => {
+const [view, setView] = useState('list')
+console.log(data.length)
+  return (
+		<div className='p-2 lg:p-5 mt-5 bg-white rounded-lg flex flex-col gap-0 min-h-[320px] h-max'>
+			<div className='flex justify-between items-center'>
+				<p className='text-xs lg:text-xl font-bold text-black'>
+					{'Recent Files'}
+				</p>
+				<div className='flex items-center gap-4 text-black'>
+					<div
+						className={`p-1 lg:p-2 rounded-full hover:bg-black/10 hover:text-black ${
+							view === 'list' ? 'bg-black/20' : 'bg-white'
+						} `}
+						onClick={() => setView('list')}
+					>
+						<ToolTip
+							text={'List layout'}
+							item={
+								<List className='w-4 h-4 lg:w-full' strokeWidth={1} size={13} />
+							}
+							// trigger={}
+							view={view}
+						/>
+					</div>
+					<div
+						className={`p-1 lg:p-2 rounded-full hover:bg-black/10 hover:text-black ${
+							view === 'icons' ? 'bg-black/20 ' : 'bg-white'
+						} `}
+						onClick={() => setView('icons')}
+					>
+						<ToolTip
+							text={'Grid layout'}
+							item={
+								<LayoutGrid
+									className='w-4 h-4 lg:w-full lg:h-full'
+									strokeWidth={1}
+									size={13}
+								/>
+							}
+							// trigger={}
+							view={view}
+						/>
+					</div>
+					<a className='float-right bg-green-500 p-1 lg:p-2 rounded-md  text-white text-xs'>
+						View All
+					</a>
+				</div>
+			</div>
+			{view === 'list' && <DetailBar state={'file'} />}
+			<Separator className={`'mt-0' ${view === 'icons' && 'mt-6'} `} />
+			{loading && <Loading2 />}
+			{error && <Error error={error} />}
+			{success && (
+				<div
+					className={`${
+						view === 'icons'
+							? `${
+									data.length === 0
+										? 'flex justify-center items-center w-full h-full '
+										: 'w-full grid  grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 py-2 '
+							  } `
+							: 'flex flex-col w-full h-full '
+					} `}
+				>
+					{!loading && data.length === 0 ? (
+						<div className='w-full h-full flex justify-center items-center'>
+							<GifNew text='Use the "New File" button to add new files' />
+						</div>
+					) : (
+						<React.Fragment>
+							{data.map((item, index) => {
+								return (
+									<div>
+										<FileItem key={index} file={item} view={view} />
+									</div>
+								)
+							})}
+						</React.Fragment>
+					)}
+				</div>
+			)}
+		</div>
+	)
+}
+const loadarray = [1, 2, 3, 4]
+export const Loading2 = () => {
+	return (
+		<div className='w-full h-10  '>
+			{loadarray.map((each) => (
+				<div className='w-full h-full mt-2 flex '>
+					<div className=' w-full flex items-center gap-x-2'>
+						<Skeleton className='h-full w-10  rounded-md' />
+						<Skeleton className='w-full h-full ' />
+					</div>
+				</div>
+			))}
+		</div>
+	)
+}
+const Error = ({ error }) => {
+	return (
+		<div className='w-full text-2xl text-black h-full flex items-center justify-center'>
+			<h1>{error&&'error'} x</h1>
+		</div>
+	)
+}
+export default FileList
