@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import { useContext, useEffect, useState } from 'react'
 import SearchBar from '@/components/parentcomponents/SearchBar'
 import FolderList from '@/components/parentcomponents/Folder/FolderList'
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore'
 import { app } from '@/configuration/FirebaseConfig'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ParentFolderContext } from '@/context/ParentFolderContext'
@@ -30,14 +30,51 @@ export default function MyHome() {
 	const [fileList, setFileList] = useState([])
 	const { data: session } = useSession()
 	const {parentFolderId, setParentFolderId} = useContext(ParentFolderContext)
-		const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
-
+	const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
+	const db = getFirestore(app)
+ const [config, setConfig] = useState({
+	view: true,
+	defaultFolder: true,
+})
 	// useEffect to auth and also to get my folders
 	useEffect(() => {
 		if (!session) {
 			router.push('/login')
 		} else {
 			console.log('User Session', session.user)
+			// get user config
+			const fetchUserConfig = async () => {
+				if (!session) {
+					router.push('/login')
+				} else {
+					try {
+						const userSettingsRef = doc(db, 'Settings', session.user.email)
+
+						const docSnap = await getDoc(userSettingsRef)
+
+						if (docSnap.exists()) {
+							const userConfig = docSnap.data()
+							setConfig({
+								view: userConfig.view ?? true,
+								defaultFolder: userConfig.defaultFolder ?? true,
+							})
+						} else {
+							console.log('No user settings found, using defaults.')
+						}
+					} catch (error) {
+						console.error('Error fetching user settings:', error)
+						toast({
+							title: 'Error',
+							description:
+								'Failed to load your settings. Please refresh the page.',
+							variant: 'destructive',
+						})
+					}
+				}
+			}
+
+			fetchUserConfig()
+
 			setParentFolderId(0)
 			getAllFolders()
 			getAllFiles()
@@ -129,7 +166,7 @@ export default function MyHome() {
 	}
 	return (
 		<div className='w-full h-full p-4 '>
-			<div className='h-max w-full'>
+			<div className={`${geistSans}'h-max w-full '`}>
 				<SearchBar />
 			</div>
 			<FolderList
@@ -137,12 +174,14 @@ export default function MyHome() {
 				success={success}
 				error={error}
 				loading={loading}
+				config={config}
 			/>
 			<FileList
 				data={fileList}
 				success={fileSuccess}
 				error={fileError}
 				loading={fileLoading}
+				config={config}
 			/>
 		</div>
 	)

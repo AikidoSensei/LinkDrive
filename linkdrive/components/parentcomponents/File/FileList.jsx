@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import ToolTip from '../ToolTip'
 import { LayoutGrid, List } from 'lucide-react'
@@ -9,8 +9,17 @@ import { Skeleton } from '@/components/ui/skeleton'
 import DetailBar from '../DetailBar'
 import GifNew from '../GifNew'
 
-const FileList = ({data, loading, error, success}) => {
-const [view, setView] = useState('list')
+const FileList = ({data, loading, error, success, config}) => {
+	
+const [view, setView] = useState('icons')
+
+useEffect(() => {
+	if (config?.view === true) {
+		setView('icons')
+	} else {
+		setView('list')
+	}
+}, [config])
 console.log(data.length)
   return (
 		<div className='p-2 lg:p-5 mt-5 bg-white rounded-lg flex flex-col gap-0 min-h-[320px] h-max'>

@@ -11,10 +11,18 @@ import GifNew from '../GifNew'
 import DetailBar from '../DetailBar'
 import { Loading2 } from '../File/FileList'
 
-const FolderList = ({ data, success, loading, error, title }) => {
-	console.log(data, success, loading, error, title)
+const FolderList = ({ data, success, loading, error, title, config }) => {
 	const router = useRouter()
-	const [view, setView] = useState('icons')
+  const [view, setView] = useState('icons')
+
+	 useEffect(() => {
+			if (config?.view === true) {
+				setView('icons') 
+			} else {
+				setView('list')
+			}
+		}, [config])
+
 	const {parentFolderId, setParentFolderId} = useContext(ParentFolderContext)
 
 const folderClick = (item)=>{
@@ -103,7 +111,7 @@ const folderClick = (item)=>{
 											folderClick(item)
 										}}
 									>
-										<FolderItem folder={item} view={view} />
+										<FolderItem folder={item} view={view} icon={config.defaultFolder} />
 									</div>
 								)
 							})}

@@ -16,6 +16,14 @@ import { Button } from '@/components/ui/button'
 import NewFolderModal from './Folder/NewFolderModal'
 import UploadFile from './File/UploadFile'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
+import { Geist_Mono } from 'next/font/google'
+
+const geistMono = Geist_Mono({
+	variable: '--font-geist-mono',
+	subsets: ['latin'],
+})
+
 const items = [
 	{
 		title: 'Home',
@@ -57,7 +65,10 @@ const SideBarComponent = () => {
 		<Sidebar >
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Application</SidebarGroupLabel>
+					<SidebarGroupLabel>
+						<div className={`'p-1  bg-white shadow-md rounded-xl'`}><Image src={'/linkdrive-logo.png'} width={30} height={30}/></div>
+						<p className='text-lg font-bold text-black'>LinkDrive</p>
+					</SidebarGroupLabel>
 					<SidebarGroup className='gap-2 mb-4 '>
 						<Dialog >
 							<DialogTrigger asChild>
