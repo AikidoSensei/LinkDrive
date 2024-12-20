@@ -51,6 +51,7 @@ const StorageInfo = () => {
 					variant: 'message',
 					title: 'You are yet to upload a file',
 				})
+				setLoading(false)
 				return
 			}
 

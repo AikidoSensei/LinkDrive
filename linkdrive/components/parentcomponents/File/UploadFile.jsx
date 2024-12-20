@@ -94,7 +94,9 @@ const UploadFile = () => {
      createdBy:session.user.email,
      parentFolderId: parentFolderId,
      imageUrl: publicURL.data.publicUrl,
-					id:fileId.toString()
+					id:fileId.toString(),
+					starred:false,
+					trash:false,
      
     });
     toast({

@@ -21,10 +21,11 @@ import ToolTip from '../ToolTip'
 import DeleteFolderModal from '../DeleteFolderModal'
 import { signOut } from 'next-auth/react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useRouter } from 'next/router'
 
 const UserInfo = () => {
 	const { data: session } = useSession()
-
+	const router = useRouter();
 	let initials = ''
 
 	const name = session?.user?.name || ''
@@ -78,7 +79,7 @@ const UserInfo = () => {
 						side='right'
 						align='start'
 					>
-						<DropdownMenu.Item className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md mb-1 hover:bg-blue-500/10 hover:text-blue-600  cursor-pointer text-black ' onClick={()=>{router.push('/settings')}}>
+						<DropdownMenu.Item className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md mb-1 hover:bg-blue-500/10 hover:text-blue-600  cursor-pointer text-black ' onClick={()=>{router.push('/settings')}} >
 							<Settings2 strokeWidth={1} size={18} /> Settings
 						</DropdownMenu.Item>
 						<Separator />

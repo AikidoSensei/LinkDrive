@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import {
 	FileIcon,
@@ -9,7 +9,7 @@ import {
 	Trash,
 	Trash2,
 } from 'lucide-react'
-import React from 'react'
+import React, { useContext } from 'react'
 import moment from 'moment'
 import ToolTip from '../ToolTip'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
@@ -17,9 +17,16 @@ import { Separator } from '@/components/ui/separator'
 import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import DeleteModal from '../DeleteModal'
+import { doc, getFirestore, updateDoc } from 'firebase/firestore'
+import { RefreshContext } from '@/context/RefreshContext'
+import { app } from '@/configuration/FirebaseConfig'
+import { toast } from '@/hooks/use-toast'
 
 const FileItem = ({ file, view }) => {
-	// to check the file type and return appopriate icon
+	const db = getFirestore(app)
+	console.log(file.starred)
+  const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
+	// to check the file type and return appopriate icon :-)
 	const iconChecker = (format) => {
 		const type = format.toLowerCase()
 
@@ -47,7 +54,61 @@ const FileItem = ({ file, view }) => {
 			return `${(bytes / 1024 ** 3).toFixed(2)} GB`
 		}
 	}
-	
+	// handle starring
+const handleStar = async (id, starred) => {
+	try {
+		const fileRef = doc(db, 'Files', id)
+
+		const newStarredValue = !starred
+
+		await updateDoc(fileRef, {
+			starred: newStarredValue,
+		})
+
+		setRefreshTrigger(!refreshTrigger)
+
+		toast({
+			title: 'Success',
+			description: `File has been ${newStarredValue ? 'starred' : 'unstarred'}`,
+			variant: 'default',
+		})
+	} catch (error) {
+		console.error('Error updating the starred status:', error)
+
+		toast({
+			title: 'Error',
+			description: 'Could not update starred status',
+			variant: 'destructive',
+		})
+	}
+}
+const handleTrash = async (id, trash) => {
+	try {
+		const fileRef = doc(db, 'Files', id)
+
+		const newTrashValue = !trash
+
+		await updateDoc(fileRef, {
+			trash: newTrashValue,
+		})
+
+		setRefreshTrigger(!refreshTrigger)
+
+		toast({
+			title: 'Success',
+			description: `File has been ${newTrashValue ? 'moved to trash' : 'removed from trash'}`,
+			variant: 'default',
+		})
+	} catch (error) {
+		console.error('Error updating the trash status:', error)
+
+		toast({
+			title: 'Error',
+			description: 'Could not update trash status',
+			variant: 'destructive',
+		})
+	}
+}
 	return (
 		<div
 			className={`w-full relative ${
@@ -83,6 +144,7 @@ const FileItem = ({ file, view }) => {
 					text={file.name}
 				/>
 			</div>
+
 			{/* show the modified and size of files in list mode */}
 			{view === 'list' && (
 				<React.Fragment>
@@ -100,6 +162,9 @@ const FileItem = ({ file, view }) => {
 				</React.Fragment>
 			)}
 			{/* more options */}
+			{file.starred && (
+				<Star strokeWidth={1} size={10} fill='#FDD835' stroke='#FDD835' />
+			)}
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild>
 					<a
@@ -122,19 +187,37 @@ const FileItem = ({ file, view }) => {
 						<PackageOpen strokeWidth={1} size={18} /> Open File
 					</DropdownMenu.Item>
 					<Separator />
-					<DropdownMenu.Item className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md my-1 hover:bg-yellow-500/10 hover:text-yellow-600 cursor-pointer '>
-						<Star strokeWidth={1} size={18} /> Star
+					<DropdownMenu.Item
+						className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md my-1 hover:bg-yellow-500/10 hover:text-yellow-600 cursor-pointer '
+						onClick={() => handleStar(file.id, file.starred)}
+					>
+						<Star
+							strokeWidth={1}
+							size={18}
+							fill={`${file.starred ? '#FDD835' : 'transparent'}`}
+							stroke='#FDD835'
+							className=''
+						/>
+						{file.starred ? 'Remove from starred' : 'Star'}
 					</DropdownMenu.Item>
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
 							<div
 								className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md  hover:bg-red-500/10 hover:text-red-600 cursor-pointer '
-								onClick={(e) => e.stopPropagation()}
+								onClick={(e) => {
+									e.stopPropagation()
+								}}
 							>
 								<Trash2 strokeWidth={1} size={18} color='red' /> Delete
 							</div>
 						</AlertDialogTrigger>
-						<DeleteModal path={file.imageUrl} name={file.name} id={file.id} />
+						<DeleteModal
+							path={file.imageUrl}
+							name={file.name}
+							id={file.id}
+							trash={()=>handleTrash(file.id, file.trash)}
+							trashState={file.trash}
+						/>
 					</AlertDialog>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>

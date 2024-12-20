@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
-import { Loader, Loader2, Trash2 } from 'lucide-react'
+import { Loader, Loader2, Trash2, TrashIcon } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { createClient } from '@supabase/supabase-js'
 import { ToastAction } from '../ui/toast'
@@ -15,7 +15,7 @@ const supabase = createClient(
 )
 
 
-const DeleteModal = ({name, id}) => {
+const DeleteModal = ({name, id, trash, trashState}) => {
 const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
 
  const db = getFirestore(app)
@@ -106,16 +106,21 @@ const handleDelete = async (name,id) => {
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter>
-				<AlertDialogCancel className='bg-black text-white outline-none hover:outline-none hover:bg-black hover:text-white'>
-					Cancel
-				</AlertDialogCancel>
-				<AlertDialogAction
-					className='bg-red-500 hover:bg-red-600 '
-					onClick={() => handleDelete(name, id)}
-				>
-					{' '}
-					<Trash2 /> Continue
+				<AlertDialogAction onClick={()=>trash()}>
+				<TrashIcon/>	{trashState ? 'Remove from trash' : 'Move to trash'}
 				</AlertDialogAction>
+				<div className='w-full flex items-center justify-end gap-2 ml-10'>
+					<AlertDialogCancel className='bg-black text-white outline-none hover:outline-none hover:bg-black hover:text-white'>
+						Cancel
+					</AlertDialogCancel>
+					<AlertDialogAction
+						className='bg-red-500 hover:bg-red-600 '
+						onClick={() => handleDelete(name, id)}
+					>
+						{' '}
+						<Trash2 /> Continue
+					</AlertDialogAction>
+				</div>
 			</AlertDialogFooter>
 		</AlertDialogContent>
 	)

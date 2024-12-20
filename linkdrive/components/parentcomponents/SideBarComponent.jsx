@@ -15,35 +15,36 @@ import {
 import { Button } from '@/components/ui/button'
 import NewFolderModal from './Folder/NewFolderModal'
 import UploadFile from './File/UploadFile'
+import { useRouter } from 'next/router'
 const items = [
 	{
 		title: 'Home',
-		url: '#',
+		url: '/',
 		icon: Home,
 	},
 	{
 		title: 'My Files',
-		url: '#',
+		url: '/Files',
 		icon: Inbox,
 	},
 	{
 		title: 'Starred',
-		url: '#',
+		url: '/starred',
 		icon: Calendar,
 	},
 	{
 		title: 'Search',
-		url: '#',
+		url: '#search',
 		icon: Search,
 	},
 	{
 		title: 'Bin',
-		url: '#',
+		url: '/trash',
 		icon: Trash,
 	},
 	{
 		title: 'Settings',
-		url: '#',
+		url: '/settings',
 		icon: Settings,
 	},
 ]
@@ -51,6 +52,7 @@ const items = [
 
 // FONTS
 const SideBarComponent = () => {
+	const router = useRouter()
   return (
 		<Sidebar >
 			<SidebarContent>
@@ -82,8 +84,8 @@ const SideBarComponent = () => {
 										asChild
 										className={`${
 											item.title === 'Bin' &&
-											'bg-red-500 text-white hover:bg-red-600  duration-200 hover:text-white'
-										} h-10`}
+											'bg-red-500 text-red duration-200'
+										} h-10 ${router.pathname === item.url && 'bg-black/5'}`}
 									>
 										<a href={item.url}>
 											<item.icon className='' />
