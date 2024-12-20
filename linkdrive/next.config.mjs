@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: false,
-	// 'https://lh3.googleusercontent.com'
 	images: {
 		remotePatterns: [
 			{

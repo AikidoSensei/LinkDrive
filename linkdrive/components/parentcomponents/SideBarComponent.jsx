@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { Calendar, Home, Inbox, Search, Settings, Folder, FolderPlus, PlusCircle, Trash } from 'lucide-react'
+import { SidebarHeader, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { Calendar, Home, Inbox, Search, Settings, Folder, FolderPlus, PlusCircle, Trash, GalleryVerticalEnd } from 'lucide-react'
 import {
 	Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, } from '@/components/ui/sidebar'
 import {
@@ -27,17 +27,17 @@ const geistMono = Geist_Mono({
 const items = [
 	{
 		title: 'Home',
-		url: '/',
+		url: '/app/dashboard',
 		icon: Home,
 	},
 	{
 		title: 'My Files',
-		url: '/Files',
+		url: '/app/dashboard/Files',
 		icon: Inbox,
 	},
 	{
 		title: 'Starred',
-		url: '/starred',
+		url: '/app/dashboard/starred',
 		icon: Calendar,
 	},
 	{
@@ -47,37 +47,49 @@ const items = [
 	},
 	{
 		title: 'Bin',
-		url: '/trash',
+		url: '/app/dashboard/trash',
 		icon: Trash,
 	},
 	{
 		title: 'Settings',
-		url: '/settings',
+		url: '/app/dashboard/settings',
 		icon: Settings,
 	},
 ]
 
 
 // FONTS
-const SideBarComponent = () => {
+const SideBarComponent = ({...props}) => {
 	const router = useRouter()
   return (
-		<Sidebar >
+		<Sidebar variant='floating' {...props}>
+			<SidebarHeader>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton size='lg' asChild>
+							<a href='#'>
+								<div className={`'p-1  rounded-xl'`}>
+									<Image src={'/linkdrive-logo.png'} width={30} height={30} />
+								</div>
+								<p className='text-lg font-bold text-black'>LinkDrive</p>
+								
+							</a>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>
-						<div className={`'p-1  bg-white shadow-md rounded-xl'`}><Image src={'/linkdrive-logo.png'} width={30} height={30}/></div>
-						<p className='text-lg font-bold text-black'>LinkDrive</p>
-					</SidebarGroupLabel>
+					<SidebarGroupLabel></SidebarGroupLabel>
 					<SidebarGroup className='gap-2 mb-4 '>
-						<Dialog >
+						<Dialog>
 							<DialogTrigger asChild>
-						<Button className='h-full text-lg bg-green-500 hover:bg-green-400 shadow-lg'>
-							<PlusCircle className='scale-125' /> New File
-						</Button>
-						</DialogTrigger>
-						<UploadFile/>
-							</Dialog>
+								<Button className='h-full text-lg bg-green-500 hover:bg-green-400 shadow-lg'>
+									<PlusCircle className='scale-125' /> New File
+								</Button>
+							</DialogTrigger>
+							<UploadFile />
+						</Dialog>
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button className='h-full text-lg'>
@@ -94,8 +106,7 @@ const SideBarComponent = () => {
 									<SidebarMenuButton
 										asChild
 										className={`${
-											item.title === 'Bin' &&
-											'bg-red-500 text-red duration-200'
+											item.title === 'Bin' && 'bg-red-500 text-red duration-200'
 										} h-10 ${router.pathname === item.url && 'bg-black/5'}`}
 									>
 										<a href={item.url}>

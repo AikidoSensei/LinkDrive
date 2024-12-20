@@ -42,7 +42,8 @@ const UserInfo = () => {
 
 	return (
 		<React.Fragment>
-			{!session?<Loading/>:<div className='w-full h-full flex justify-between items-center p-4 gap-2 '>
+			{!session?<Loading/>:
+			<div className='w-max h-full flex justify-between items-center p-4 gap-2 '>
 				<div className='w-full h-full flex items-center gap-2 p-2 border border-slate-2 rounded-xl'>
 					<Avatar className='bg-blue-300 text-black'>
 						<AvatarImage src={image} />

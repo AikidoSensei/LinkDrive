@@ -27,7 +27,7 @@ const FolderList = ({ data, success, loading, error, title, config }) => {
 
 const folderClick = (item)=>{
 	setParentFolderId(item.id)
-	router.push({pathname:`/folder/${item.id}`,query:{
+	router.push({pathname:`dashboard/folder/${item.id}`,query:{
 		id:item.id,
 		name:item.name
 	}})
