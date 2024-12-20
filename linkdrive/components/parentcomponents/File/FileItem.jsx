@@ -23,11 +23,13 @@ const FileItem = ({ file, view }) => {
 	const iconChecker = (format) => {
 		const type = format.toLowerCase()
 
-		if (['jpg', 'jpeg', 'png'].includes(type)) {
+		if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(type)) {
 			return <ImageIcon />
 		} else if (type === 'pdf') {
 			return <PdfIcon />
-		} else if (['docx', 'doc', 'txt'].includes(type)) {
+		} else if (
+			['docx', 'doc', 'txt', 'ppt', 'pptx', 'xlsx', 'csv'].includes(type)
+		) {
 			return <DocIcon />
 		} else {
 			return <FileIcon />
@@ -45,6 +47,7 @@ const FileItem = ({ file, view }) => {
 			return `${(bytes / 1024 ** 3).toFixed(2)} GB`
 		}
 	}
+	
 	return (
 		<div
 			className={`w-full relative ${
@@ -85,13 +88,13 @@ const FileItem = ({ file, view }) => {
 				<React.Fragment>
 					<ToolTip
 						item={
-							<p className='text-xs md:text-sm col-span-1 text-slate-700'>
+							<p className='text-[8pt] md:text-sm col-span-1 text-slate-700'>
 								{moment(file.modifiedAt).format('LL')}
 							</p>
 						}
 						text={moment(file.modifiedAt).format('LLLL')}
 					/>
-					<p className='text-xs md:text-sm col-span-1 text-slate-700'>
+					<p className='text-[8pt] md:text-sm ml-12  col-span-1 text-slate-700'>
 						{formatFileSize(file.size)}
 					</p>
 				</React.Fragment>

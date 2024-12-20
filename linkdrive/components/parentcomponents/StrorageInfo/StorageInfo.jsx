@@ -1,16 +1,19 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import UserInfo from './UserInfo'
 import StorageDetails from './StorageDetails'
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
 import { app } from '@/configuration/FirebaseConfig'
 import { useSession } from 'next-auth/react'
 import { toast } from '@/hooks/use-toast'
+import { RefreshContext } from '@/context/RefreshContext'
 
 const StorageInfo = () => {
 	const { data: session } = useSession()
+  const {refreshTrigger, setRefreshTrigger} = useContext(RefreshContext)
+  const [loading, setLoading] = useState(false)
 
-	const [used, setUsed] = useState(0) // Total size
+	const [used, setUsed] = useState(0) 
 	const [sizes, setSizes] = useState({
 		documents: 0,
 		images: 0,
@@ -29,10 +32,11 @@ const StorageInfo = () => {
 		if (session) {
 			getUserFiles()
 		}
-	}, [session])
+	}, [session, refreshTrigger])
 
 	const getUserFiles = async () => {
 		console.log('Fetching user files...')
+    setLoading(true)
 		const db = getFirestore(app)
 		const q = query(
 			collection(db, 'Files'),
@@ -100,7 +104,7 @@ const StorageInfo = () => {
 			setUsed(totalUsed)
 			setSizes(fileSizes)
 			setNumberOfFiles(fileCounts)
-
+      setLoading(false);
 			console.log('File Sizes: ', fileSizes)
 			console.log('File Counts: ', fileCounts)
 			console.log('Total Used: ', totalUsed)
@@ -111,12 +115,13 @@ const StorageInfo = () => {
 				title: 'Error fetching files',
 				description: error.message,
 			})
+      setLoading(false);
 		}
 	}
 	return (
 		<div>
 			<UserInfo />
-			<StorageDetails used={used} eachSize={sizes} files={numberOfFiles} />
+			<StorageDetails used={used} eachSize={sizes} files={numberOfFiles} loading={loading} />
 		</div>
 	)
 }
