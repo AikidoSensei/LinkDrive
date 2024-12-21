@@ -35,7 +35,7 @@ export default function MyHome() {
 
 
 	return (
-		<div className='w-full h-full p-4 flex text-black justify-center items-center'>
+		<div className={`${poppins.className} w-full h-full p-4 flex text-black justify-center items-center`}>
 			<h1>Hello World! Welcome to linkdrive</h1>
 			<Button onClick={() => signIn()}> Sign in with Google</Button>
 		</div>

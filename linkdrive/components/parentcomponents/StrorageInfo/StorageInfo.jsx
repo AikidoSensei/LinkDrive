@@ -1,19 +1,26 @@
-"use client"
+'use client'
 import React, { useContext, useEffect, useState } from 'react'
 import UserInfo from './UserInfo'
 import StorageDetails from './StorageDetails'
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
+import {
+	collection,
+	getDocs,
+	getFirestore,
+	query,
+	where,
+} from 'firebase/firestore'
 import { app } from '@/configuration/FirebaseConfig'
 import { useSession } from 'next-auth/react'
 import { toast } from '@/hooks/use-toast'
 import { RefreshContext } from '@/context/RefreshContext'
+import { Button } from '@/components/ui/button'
 
 const StorageInfo = () => {
 	const { data: session } = useSession()
-  const {refreshTrigger, setRefreshTrigger} = useContext(RefreshContext)
-  const [loading, setLoading] = useState(false)
+	const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
+	const [loading, setLoading] = useState(false)
 
-	const [used, setUsed] = useState(0) 
+	const [used, setUsed] = useState(0)
 	const [sizes, setSizes] = useState({
 		documents: 0,
 		images: 0,
@@ -35,8 +42,7 @@ const StorageInfo = () => {
 	}, [session, refreshTrigger])
 
 	const getUserFiles = async () => {
-		console.log('Fetching user files...')
-    setLoading(true)
+		setLoading(true)
 		const db = getFirestore(app)
 		const q = query(
 			collection(db, 'Files'),
@@ -105,10 +111,10 @@ const StorageInfo = () => {
 			setUsed(totalUsed)
 			setSizes(fileSizes)
 			setNumberOfFiles(fileCounts)
-      setLoading(false);
-			console.log('File Sizes: ', fileSizes)
-			console.log('File Counts: ', fileCounts)
-			console.log('Total Used: ', totalUsed)
+			setLoading(false)
+			// console.log('File Sizes: ', fileSizes)
+			// console.log('File Counts: ', fileCounts)
+			// console.log('Total Used: ', totalUsed)
 		} catch (error) {
 			console.error('Error fetching user files: ', error.message)
 			toast({
@@ -116,13 +122,35 @@ const StorageInfo = () => {
 				title: 'Error fetching files',
 				description: error.message,
 			})
-      setLoading(false);
+			setLoading(false)
 		}
 	}
 	return (
-		<div>
+		<div className='bg-white'>
 			<UserInfo />
-			<StorageDetails used={used} eachSize={sizes} files={numberOfFiles} loading={loading} />
+			<StorageDetails
+				used={used}
+				eachSize={sizes}
+				files={numberOfFiles}
+				loading={loading}
+			/>
+			<div className='w-full h-full p-4'>
+				<div className='h-[150px] w-full rounded-xl border bg-black '>
+					<div className='w-full h-full rounded-xl p-4 flex flex-col justify-between '>
+						<div className=''>
+							<div className='w-3 h-1 bg-purple-400 rounded-3xl'></div>
+							<p>
+								next tier
+								<span className='font-bold text-md ml-2'>Standard</span>
+							</p>
+							<p className='text-xs'>Standard plan offers 2GB of storage</p>
+						</div>
+						<Button className='bg-green-400 hover:bg-green-500 rounded-md text-white'>
+							Upgrade
+						</Button>
+					</div>
+				</div>
+			</div>
 		</div>
 	)
 }

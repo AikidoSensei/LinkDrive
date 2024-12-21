@@ -14,7 +14,7 @@ import { Loading2 } from '../File/FileList'
 const FolderList = ({ data, success, loading, error, title, config }) => {
 	const router = useRouter()
   const [view, setView] = useState('icons')
-
+		
 	 useEffect(() => {
 			if (config?.view === true) {
 				setView('icons') 
@@ -22,18 +22,20 @@ const FolderList = ({ data, success, loading, error, title, config }) => {
 				setView('list')
 			}
 		}, [config])
-
-	const {parentFolderId, setParentFolderId} = useContext(ParentFolderContext)
+		
+		const {parentFolderId, setParentFolderId} = useContext(ParentFolderContext)
+		console.log('Folderlist:',parentFolderId)
 
 const folderClick = (item)=>{
 	setParentFolderId(item.id)
-	router.push({pathname:`dashboard/folder/${item.id}`,query:{
+	router.push({pathname:`/app/dashboard/folder/${item.id}`,query:{
 		id:item.id,
 		name:item.name
 	}})
 }
+console.log(router)
 	return (
-		<div className='p-2 lg:p-5 mt-5 bg-white rounded-lg flex flex-col gap-0 min-h-[280px] h-max overflow-y-hidden '>
+		<div className='p-2 lg:p-5 bg-white flex flex-col gap-0 min-h-[320px] h-max overflow-y-hidden '>
 			<div className='flex justify-between items-center'>
 				<p className='text-xs lg:text-xl font-bold text-black'>
 					{title || 'Recent Folders'}
@@ -42,9 +44,8 @@ const folderClick = (item)=>{
 					<div
 						className={` p-1 lg:p-2 rounded-full hover:bg-blue-500/20 hover:text-black ${
 							view === 'list' ? 'bg-blue-500/20' : 'bg-white'
-						} `}
-						onClick={() => setView('list')}
-					>
+						}`}
+						onClick={() => setView('list')}>
 						<ToolTip
 							text={'List layout'}
 							item={
@@ -104,14 +105,15 @@ const folderClick = (item)=>{
 						</div>
 					) : (
 						<React.Fragment>
-							{data.map((item) => {
+							{data.map((item, index) => {
 								return (
 									<div
+									key={index}
 										onClick={() => {
 											folderClick(item)
 										}}
 									>
-										<FolderItem folder={item} view={view} icon={config.defaultFolder} />
+										<FolderItem folder={item} view={view} icon={config?.defaultFolder} />
 									</div>
 								)
 							})}

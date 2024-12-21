@@ -20,9 +20,8 @@ useEffect(() => {
 		setView('list')
 	}
 }, [config])
-console.log(data.length)
   return (
-		<div className='p-2 lg:p-5 mt-5 bg-white rounded-lg flex flex-col gap-0 min-h-[320px] h-max'>
+		<div className='p-2 lg:p-5  bg-white border-t flex flex-col gap-0 min-h-[320px] h-max'>
 			<div className='flex justify-between items-center'>
 				<p className='text-xs lg:text-xl font-bold text-black'>
 					{'Recent Files'}
@@ -107,8 +106,8 @@ const loadarray = [1, 2, 3, 4]
 export const Loading2 = () => {
 	return (
 		<div className='w-full h-10  '>
-			{loadarray.map((each) => (
-				<div className='w-full h-full mt-2 flex '>
+			{loadarray.map((each,index) => (
+				<div className='w-full h-full mt-2 flex ' key={index}>
 					<div className=' w-full flex items-center gap-x-2'>
 						<Skeleton className='h-full w-10  rounded-md' />
 						<Skeleton className='w-full h-full ' />

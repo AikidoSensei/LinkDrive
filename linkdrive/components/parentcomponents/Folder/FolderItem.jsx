@@ -8,8 +8,10 @@ import { Separator } from '@/components/ui/separator'
 import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import DeleteModal from '../DeleteModal'
 import DeleteFolderModal from '../DeleteFolderModal'
+
+
 const FolderItem = ({folder, view, icon}) => {
-console.log(icon)
+
   return (
 		<div
 			className={`w-full relative ${

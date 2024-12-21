@@ -43,8 +43,8 @@ const UserInfo = () => {
 	return (
 		<React.Fragment>
 			{!session?<Loading/>:
-			<div className='w-max h-full flex justify-between items-center p-4 gap-2 '>
-				<div className='w-full h-full flex items-center gap-2 p-2 border border-slate-2 rounded-xl'>
+			<div className='w-full h-full flex justify-between items-center '>
+				<div className='w-full h-full flex items-center gap-x-2 p-2  '>
 					<Avatar className='bg-blue-300 text-black'>
 						<AvatarImage src={image} />
 						<AvatarFallback>{initials}</AvatarFallback>
@@ -80,7 +80,7 @@ const UserInfo = () => {
 						side='right'
 						align='start'
 					>
-						<DropdownMenu.Item className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md mb-1 hover:bg-blue-500/10 hover:text-blue-600  cursor-pointer text-black ' onClick={()=>{router.push('/settings')}} >
+						<DropdownMenu.Item className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md mb-1 hover:bg-blue-500/10 hover:text-blue-600  cursor-pointer text-black ' onClick={()=>{router.push('/app/dashboard/settings')}} >
 							<Settings2 strokeWidth={1} size={18} /> Settings
 						</DropdownMenu.Item>
 						<Separator />

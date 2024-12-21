@@ -14,15 +14,18 @@ import {
   MoveRight,
   Search,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ToolTip from "./ToolTip";
 import { useRouter } from "next/navigation";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Separator } from "../ui/separator";
-
+import { BreadCrumbContext } from '@/context/BreadCrumbContext';
+import { ParentFolderContext } from '@/context/ParentFolderContext';
 const SearchBar = (props) => {
+	const {crumb, setCrumb} = useContext(BreadCrumbContext)
+	const { parentFolderId, setParentFolderId } = useContext(ParentFolderContext)
   const router = useRouter();
-  
+  console.log(parentFolderId)
   const [networkState, setNetworkState] = useState({
     isOnline: true, 
     effectiveType: "",
@@ -46,7 +49,7 @@ window.removeEventListener("online", updateNetState);
   , []);
 
   return (
-		<div className='w-full h-12 flex items-center justify-between gap-2 bg-white rounded-xl p-4'>
+		<div className='w-full h-14 flex items-center justify-between gap-2 bg-white  px-2 py-4 border-b'>
 			<div className='flex items-center justify-between gap-2'>
 				<SidebarTrigger className='-ml-1 text-black' />
 				<Separator orientation='vertical' className='mr-2 h-4' />
@@ -76,13 +79,13 @@ window.removeEventListener("online", updateNetState);
 				<Breadcrumb>
 					<BreadcrumbList>
 						<BreadcrumbItem className='hidden md:block text-xs text-ellipsis line-clamp-1'>
-							<BreadcrumbLink href='#'>
-								Building Your Application
-							</BreadcrumbLink>
+							<BreadcrumbLink href='#'>Dashboard</BreadcrumbLink>
 						</BreadcrumbItem>
 						<BreadcrumbSeparator className='hidden md:block' />
 						<BreadcrumbItem className='hidden md:block text-xs'>
-							<BreadcrumbPage>Data Fetching</BreadcrumbPage>
+							<BreadcrumbPage>
+								{crumb}
+							</BreadcrumbPage>
 						</BreadcrumbItem>
 					</BreadcrumbList>
 				</Breadcrumb>

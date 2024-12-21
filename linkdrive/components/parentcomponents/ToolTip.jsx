@@ -8,7 +8,6 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
 const ToolTip = ({ item, text, trigger, view }) => {
-	console.log(view)
 	return (
 		<TooltipProvider>
 			<Tooltip>

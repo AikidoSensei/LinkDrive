@@ -1,4 +1,5 @@
 'use client'
+import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useContext } from 'react'
 import { getFirestore, collection, getDocs, query, where, deleteDoc } from 'firebase/firestore'
 import { app } from '@/configuration/FirebaseConfig'
@@ -14,45 +15,58 @@ import { RefreshContext } from '@/context/RefreshContext'
 import { useSession } from 'next-auth/react'
 import { toast } from '@/hooks/use-toast'
 import { ToastAction } from '@/components/ui/toast'
+import DashboardLayout from '@/components/layouts/DashboardLayout'
+import { useRouter } from 'next/router'
+import link from '@/public/black-link.json'
+import { BreadCrumbContext } from '@/context/BreadCrumbContext'
 
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 const Trash = () => {
 	const db = getFirestore(app)
-	const { data: session } = useSession()
+	const { data: session, status } = useSession()
+
+	const router = useRouter()
 	const [loading, setLoading] = useState(false)
 	const [data, setData] = useState([])
 	const [success, setSuccess] = useState(false)
 	const [error, setError] = useState(false)
 	const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
+	const {crumb, setCrumb} = useContext(BreadCrumbContext)
 	const [view, setView] = useState('list')
-
+	
 	useEffect(() => {
-		const fetchTrashFiles = async () => {
-			setLoading(true)
-			setError(false)
-			setSuccess(false)
-
-			try {
-				const querySnapshot = await getDocs(collection(db, 'Files'))
-				const trashFiles = []
-
-				querySnapshot.forEach((doc) => {
-					const file = doc.data()
-					if (file.trash === true) {
-						trashFiles.push({ id: doc.id, ...file })
-					}
-				})
-
-				setData(trashFiles)
-				setSuccess(true)
-			} catch (err) {
-				console.error('Error fetching trashed files:', err)
-				setError(true)
-			} finally {
-				setLoading(false)
-			}
+		setCrumb('Trash')
+		if(status==='unauthenticated'){
+			router.push('/login')
 		}
-
-		fetchTrashFiles()
+		else if (status === 'authenticated'){
+			const fetchTrashFiles = async () => {
+				setLoading(true)
+				setError(false)
+				setSuccess(false)
+	
+				try {
+					const querySnapshot = await getDocs(collection(db, 'Files'))
+					const trashFiles = []
+	
+					querySnapshot.forEach((doc) => {
+						const file = doc.data()
+						if (file.trash === true) {
+							trashFiles.push({ id: doc.id, ...file })
+						}
+					})
+	
+					setData(trashFiles)
+					setSuccess(true)
+				} catch (err) {
+					console.error('Error fetching trashed files:', err)
+					setError(true)
+				} finally {
+					setLoading(false)
+				}
+			}
+			fetchTrashFiles()
+		}
 	}, [session, refreshTrigger])
 
 const handleClearTrash = async () => {
@@ -165,9 +179,19 @@ const handleRestoreTrash = async () => {
 	}
 }
 
-	console.log(data)
-	return (
-		<div className='p-2 lg:p-5 mt-5 bg-white rounded-lg flex flex-col gap-0 min-h-[320px] h-full'>
+	if (status === 'loading') {
+		return (
+			<div className='w-full col-span-2 flex justify-center items-center h-screen z-[1000] text-black'>
+				<div className='w-[100px] h-[100px] bg-black rounded-3xl flex items-center justify-center'>
+					<div className=' bg-white rounded-full shadow-xl p-1 w-[50px]'>
+						<Lottie animationData={link} />
+					</div>
+				</div>
+			</div>
+		)
+	}
+return (
+		<div className='p-2 lg:p-5 mt-5 bg-white flex flex-col gap-0 min-h-[320px] h-full'>
 			<div className='flex justify-between items-center'>
 				<p className='text-xs lg:text-xl font-bold text-black'>
 					{'Trash'}
@@ -297,5 +321,5 @@ const Error = ({ error }) => {
 		</div>
 	)
 }
-
+Trash.getLayout = (page)=><DashboardLayout>{page}</DashboardLayout>
 export default Trash

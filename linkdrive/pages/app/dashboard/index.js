@@ -1,4 +1,6 @@
+"use client"
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
@@ -12,7 +14,6 @@ import {
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
-
 import SearchBar from '@/components/parentcomponents/SearchBar'
 import FolderList from '@/components/parentcomponents/Folder/FolderList'
 import {
@@ -34,6 +35,9 @@ import SideBarComponent from '@/components/parentcomponents/SideBarComponent'
 import StorageInfo from '@/components/parentcomponents/StrorageInfo/StorageInfo'
 import { Toaster } from '@/components/ui/toaster'
 import UserInfo from '@/components/parentcomponents/StrorageInfo/UserInfo'
+import DashboardLayout from '@/components/layouts/DashboardLayout'
+import link from '@/public/black-link.json'
+import { BreadCrumbContext } from '@/context/BreadCrumbContext'
 const geistSans = Geist({
 	variable: '--font-geist-sans',
 	subsets: ['latin'],
@@ -43,13 +47,16 @@ const geistMono = Geist_Mono({
 	subsets: ['latin'],
 })
 //
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
+
 const Dashboard = () => {
- 	const router = useRouter()
+	const router = useRouter()
 	const [folderList, setFolderList] = useState([])
 	const [fileList, setFileList] = useState([])
-	const { data: session } = useSession()
+	const { data: session,status } = useSession()
 	const { parentFolderId, setParentFolderId } = useContext(ParentFolderContext)
 	const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
+	const { crumb, setCrumb } = useContext(BreadCrumbContext)
 	const db = getFirestore(app)
 	const [config, setConfig] = useState({
 		view: true,
@@ -57,57 +64,46 @@ const Dashboard = () => {
 	})
 
 	// useEffect to auth and also to get my folders
-	useEffect(() => {
-		if (!session) {
-			router.push('/login')
-		} else {
-			console.log('User Session', session.user)
-			// get user config
-			const fetchUserConfig = async () => {
-				if (!session) {
-					router.push('/login')
+useEffect(() => {
+setCrumb('')
+	if (status === 'unauthenticated') {
+		router.push('/login')
+	} else if (status === 'authenticated') {
+		console.log('User Session', session.user)
+		// Fetch user config and initialize state only if authenticated
+		const fetchUserConfig = async () => {
+			try {
+				const userSettingsRef = doc(db, 'Settings', session.user.email)
+				const docSnap = await getDoc(userSettingsRef)
+
+				if (docSnap.exists()) {
+					const userConfig = docSnap.data()
+					setConfig({
+						view: userConfig.view ?? true,
+						defaultFolder: userConfig.defaultFolder ?? true,
+					})
 				} else {
-					try {
-						const userSettingsRef = doc(db, 'Settings', session.user.email)
-
-						const docSnap = await getDoc(userSettingsRef)
-
-						if (docSnap.exists()) {
-							const userConfig = docSnap.data()
-							setConfig({
-								view: userConfig.view ?? true,
-								defaultFolder: userConfig.defaultFolder ?? true,
-							})
-						} else {
-							console.log('No user settings found, using defaults.')
-						}
-					} catch (error) {
-						console.error('Error fetching user settings:', error)
-						toast({
-							title: 'Error',
-							description:
-								'Failed to load your settings. Please refresh the page.',
-							variant: 'destructive',
-						})
-					}
+					console.log('No user settings found, using defaults.')
 				}
+			} catch (error) {
+				console.error('Error fetching user settings:', error)
 			}
-
-			fetchUserConfig()
-
-			setParentFolderId(0)
-			getAllFolders()
-			getAllFiles()
 		}
-	}, [session, refreshTrigger])
+		fetchUserConfig()
+		setParentFolderId(0)
+		getAllFolders()
+		getAllFiles()
+	}
+}, [status, session, router, refreshTrigger])
 
-	const [success, setSuccess] = useState(false) // Success state my ---(data)
-	const [loading, setLoading] = useState(true) // Loading state
-	const [error, setError] = useState(null) // Error state
 
-	const [fileSuccess, setFileSuccess] = useState(false) // Success state
-	const [fileLoading, setFileLoading] = useState(false) // Loading state
-	const [fileError, setFileError] = useState(false) // Error state
+	const [success, setSuccess] = useState(false) 
+	const [loading, setLoading] = useState(true) 
+	const [error, setError] = useState(null) 
+
+	const [fileSuccess, setFileSuccess] = useState(false) 
+	const [fileLoading, setFileLoading] = useState(false) 
+	const [fileError, setFileError] = useState(false) 
 
 	// get all folders function
 	const getAllFolders = async () => {
@@ -137,12 +133,12 @@ const Dashboard = () => {
 			})
 
 			setFolderList(folders)
-			setSuccess(true) // Data successfully fetched
+			setSuccess(true) 
 		} catch (error) {
 			console.error(error)
 			setError(error)
 		} finally {
-			setLoading(false) // Ensure loading is stopped
+			setLoading(false) 
 			setError(error)
 		}
 	}
@@ -175,27 +171,30 @@ const Dashboard = () => {
 			})
 
 			setFileList(files)
-			setFileSuccess(true) // Data successfully fetched
+			setFileSuccess(true) 
 			setFileError(null)
 		} catch (error) {
 			console.error(error)
 			setFileError('An error occurred while fetching folders')
 		} finally {
-			setFileLoading(false) // Ensure loading is stopped
+			setFileLoading(false) 
 		}
 	}
+if(status === loading){
+return (
+	<div className='w-full col-span-2 flex justify-center items-center h-screen z-[1000] text-black'>
+		<div className='w-[100px] h-[100px] bg-black rounded-3xl flex items-center justify-center'>
+			<div className=' bg-white rounded-full shadow-xl p-1 w-[50px]'>
+				<Lottie animationData={link} />
+			</div>
+		</div>
+	</div>
+)
+}
 	return (
-		<div className='w-full h-full p-4 '>
-			<SidebarInset>
-				{/* HEADER FOR BREAD CRUMBS */}
-				
-				{/* *********END OF BREAD CRUMB******* */}
-				<div className='grid grid-cols-1 md:grid-cols-3 w-full'>
-					<div className='col-span-2'>
-						<div className={`${geistSans}'h-max w-full flex items-center '`}>
-						
-							<SearchBar />
-						</div>
+		<div className='w-full h-full'>
+
+					
 						<FolderList
 							data={folderList}
 							success={success}
@@ -210,15 +209,10 @@ const Dashboard = () => {
 							loading={fileLoading}
 							config={config}
 						/>
-					</div>
-					<div className='bg-white shadow-xl w-full h-full rounded-xl'>
-						<StorageInfo />
-					</div>
-				</div>
-				<Toaster />
-			</SidebarInset>
+
 		</div>
 	)
 }
+Dashboard.getLayout = (page)=><DashboardLayout>{page}</DashboardLayout>
 
 export default Dashboard

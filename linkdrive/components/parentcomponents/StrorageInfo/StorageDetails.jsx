@@ -1,9 +1,11 @@
 'use client'
 import { Skeleton } from '@/components/ui/skeleton'
+import { UsedContext } from '@/context/UsedContext'
 import { AudioLines, File, Image, List, Video } from 'lucide-react'
-import React from 'react'
+import React, { useContext } from 'react'
 
 const StorageDetails = ({ used, eachSize, files, loading }) => {
+	const { usedMemory, setUsedMemory } = useContext(UsedContext)
 	const { documents, images, audio, others } = files
 	const percentageConverter = (bytes, denominator) => {
 		return (bytes / denominator) * 100 ;
@@ -25,7 +27,6 @@ const StorageDetails = ({ used, eachSize, files, loading }) => {
   
   
   
-  console.log(XDOCUMENT_PERCENTAGE, XIMAGE_PERCENTAGE, XAUDIO_PERCENTAGE, XOTHERS_PERCENTAGE)
   
 	const formatFileSize = (bytes) => {
 		if (bytes < 1024) {
@@ -45,49 +46,77 @@ const StorageDetails = ({ used, eachSize, files, loading }) => {
 	const imageSize = formatFileSize(eachSize.images)
 	const audioSize = formatFileSize(eachSize.audio)
 	const otherSize = formatFileSize(eachSize.others)
-
+ setUsedMemory(formatedUsed)
 	return (
 		<React.Fragment>
-		  {loading ? <Loading/>:<div className='w-full  text-black p-4'>
-  			<div className='flex flex-col w-full h-ful gap-y-2 rounded-xl p-2'>
-  				{/* meter */}
-  				<h1 className='text-xl lg:text-3xl font-extrabold'>
-  					{formatedUsed} <span className='text-sm font-normal'>used of </span>
-  					50MB
-  				</h1>
-  				<div className='w-full h-2.5 bg-black/5 rounded-full overflow-hidden flex'>
-  					<div className='h-full rounded-e-full  bg-violet-600 z-[4]' style={{width:XDOCUMENT_PERCENTAGE}}></div>
-  					<div className='h-full bg-green-600 -ml-1 rounded-e-full z-[3]' style={{width:XIMAGE_PERCENTAGE}}></div>
-  					<div className='h-full bg-yellow-400 rounded-e-full -ml-1 z-[2]' style={{width:XAUDIO_PERCENTAGE}}></div>
-  					<div className='h-full bg-gray-400 rounded-e-full -ml-1 z-[1]' style={{width:XOTHERS_PERCENTAGE}}></div>
-  				</div>
-  				<div className='w-full flex items-center justify-between text-xs'>
-  					<div className='w-1/3 flex items-center gap-2'>
-  						<div className='w-2 h-2 rounded-full bg-violet-600 '></div>
-  						<span>Documents</span>
-  					</div>
-  					<div className='w-1/3 flex items-center gap-2'>
-  						<div className='w-2 h-2 rounded-full bg-green-600 '></div>
-  						<span>Photos</span>
-  					</div>
-  					<div className='w-1/3 flex items-center gap-2'>
-  						<div className='w-2 h-2 rounded-full bg-yellow-400 '></div>
-  						<span>Audio</span>
-  					</div>
-  					<div className='w-1/3 flex items-center gap-2'>
-  						<div className='w-2 h-2 rounded-full bg-gray-400 '></div>
-  						<span>Others</span>
-  					</div>
-  				</div>
-  			</div>
-  			{/* type of file details */}
-  			<div className='w-full h-full flex flex-col gap-2 mt-4'>
-  				<Documents size={docSize} length={documents} width={XDOCUMENT_PERCENTAGE } />
-  				<Images size={imageSize} length={images} width={XIMAGE_PERCENTAGE}/>
-  				<Audio size={audioSize} length={audio} width={XAUDIO_PERCENTAGE} />
-  				<Others size={otherSize} length={others} width={XOTHERS_PERCENTAGE} />
-  			</div>
-  		</div>}
+			{loading ? (
+				<Loading />
+			) : (
+				<div className='w-full  text-black p-4 mt-8 '>
+					<div className='flex flex-col w-full h-ful gap-y-2 rounded-xl p-2 border'>
+						{/* meter */}
+						<h1 className='text-xl lg:text-3xl font-extrabold'>
+							{formatedUsed} <span className='text-sm font-normal mx-1'>of </span>
+							50MB <span className='text-sm font-normal'>used </span>
+						</h1>
+						<div className='w-full h-2.5 bg-black/5 rounded-full overflow-hidden flex'>
+							<div
+								className='h-full rounded-e-full  bg-violet-600 z-[4]'
+								style={{ width: XDOCUMENT_PERCENTAGE }}
+							></div>
+							<div
+								className='h-full bg-green-600 -ml-1 rounded-e-full z-[3]'
+								style={{ width: XIMAGE_PERCENTAGE }}
+							></div>
+							<div
+								className='h-full bg-yellow-400 rounded-e-full -ml-1 z-[2]'
+								style={{ width: XAUDIO_PERCENTAGE }}
+							></div>
+							<div
+								className='h-full bg-gray-400 rounded-e-full -ml-1 z-[1]'
+								style={{ width: XOTHERS_PERCENTAGE }}
+							></div>
+						</div>
+						<div className='w-full flex items-center justify-between text-xs'>
+							<div className='w-1/3 flex items-center gap-2'>
+								<div className='w-2 h-2 rounded-full bg-violet-600 '></div>
+								<span>Documents</span>
+							</div>
+							<div className='w-1/3 flex items-center gap-2'>
+								<div className='w-2 h-2 rounded-full bg-green-600 '></div>
+								<span>Photos</span>
+							</div>
+							<div className='w-1/3 flex items-center gap-2'>
+								<div className='w-2 h-2 rounded-full bg-yellow-400 '></div>
+								<span>Audio</span>
+							</div>
+							<div className='w-1/3 flex items-center gap-2'>
+								<div className='w-2 h-2 rounded-full bg-gray-400 '></div>
+								<span>Others</span>
+							</div>
+						</div>
+					</div>
+					{/* type of file details */}
+					<div className='w-full h-full flex flex-col gap-2 mt-4'>
+						<Documents
+							size={docSize}
+							length={documents}
+							width={XDOCUMENT_PERCENTAGE}
+						/>
+						<Images
+							size={imageSize}
+							length={images}
+							width={XIMAGE_PERCENTAGE}
+						/>
+						<Audio size={audioSize} length={audio} width={XAUDIO_PERCENTAGE} />
+						<Others
+							size={otherSize}
+							length={others}
+							width={XOTHERS_PERCENTAGE}
+						/>
+					</div>
+				</div>
+			)}
 		</React.Fragment>
 	)
 }
@@ -198,7 +227,7 @@ const Others = ({ size, length, width }) => {
 }
 const Loading = ()=>{
   return (
-    <div className='w-full h-full flex flex-col p-4 gap-2'>
+    <div className='w-full h-full flex flex-col p-4 mt-10  gap-2'>
       <Skeleton className='h-20 w-full p-2'/>
       <Skeleton className='h-2 w-full p-2 rounded-full'/>
       <div className='w-full flex justify-between items-center gap-2'>

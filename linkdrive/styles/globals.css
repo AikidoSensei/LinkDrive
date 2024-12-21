@@ -35,14 +35,19 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: white;
   font-family: Arial, Helvetica, sans-serif;
 }
-
+@layer utilities {
+  .bg-custom {
+    background-image: url('https://img.freepik.com/free-vector/colorful-background-with-3d-forms_1394-1022.jpg?t=st=1734807211~exp=1734810811~hmac=2f6a64bebc27d1d4d714fbf2924547d05c2cd313c0de667f2913ca4633d6f80c&w=1380');
+  }
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

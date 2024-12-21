@@ -24,7 +24,6 @@ import { toast } from '@/hooks/use-toast'
 
 const FileItem = ({ file, view }) => {
 	const db = getFirestore(app)
-	console.log(file.starred)
   const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
 	// to check the file type and return appopriate icon :-)
 	const iconChecker = (format) => {
