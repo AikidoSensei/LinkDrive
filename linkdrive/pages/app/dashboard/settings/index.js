@@ -63,6 +63,7 @@ const Settings = () => {
 		if (status === 'unauthenticated') {
 			router.push('/login')
 		} else if (status === 'authenticated') {
+			
 			const fetchUserConfig = async () => {
 				try {
 					const userSettingsRef = doc(db, 'Settings', session.user.email)

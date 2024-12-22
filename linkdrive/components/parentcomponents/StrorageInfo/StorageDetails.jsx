@@ -10,11 +10,11 @@ const StorageDetails = ({ used, eachSize, files, loading }) => {
 	const percentageConverter = (bytes, denominator) => {
 		return (bytes / denominator) * 100 ;
 	}
-	let DOCUMENT_PERCENTAGE = Math.round(percentageConverter(eachSize.documents, 50000000))
-	let IMAGE_PERCENTAGE = Math.round(percentageConverter(eachSize.images, 5000000))
-	let AUDIO_PERCENTAGE = Math.round(percentageConverter(eachSize.audio, 50000000))
-	let OTHERS_PERCENTAGE = Math.round(percentageConverter(eachSize.others, 50000000))
-
+	let DOCUMENT_PERCENTAGE = percentageConverter(eachSize.documents, 50000000)
+	let IMAGE_PERCENTAGE = percentageConverter(eachSize.images, 50000000)
+	let AUDIO_PERCENTAGE = percentageConverter(eachSize.audio, 50000000)
+	let OTHERS_PERCENTAGE = percentageConverter(eachSize.others, 50000000)
+ 
   const XDOCUMENT_PERCENTAGE = (DOCUMENT_PERCENTAGE * 0.2).toString()+'%'
   const XIMAGE_PERCENTAGE = (IMAGE_PERCENTAGE * 0.2).toString() + '%'
   const XAUDIO_PERCENTAGE = (AUDIO_PERCENTAGE * 0.2).toString() + '%'
@@ -27,26 +27,36 @@ const StorageDetails = ({ used, eachSize, files, loading }) => {
   
   
   
-  
 	const formatFileSize = (bytes) => {
-		if (bytes < 1024) {
+		if (bytes < 1000) {
 			return `${bytes} Bytes`
-		} else if (bytes < 1024 ** 2) {
-			return `${(bytes / 1024).toFixed(2)} KB`
-		} else if (bytes < 1024 ** 3) {
-			return `${(bytes / 1024 ** 2).toFixed(2)} MB`
+		} else if (bytes < 1000 ** 2) {
+			return `${(bytes / 1000).toFixed(2)} KB`
+		} else if (bytes < 1000 ** 3) {
+			return `${(bytes / 1000 ** 2).toFixed(2)} MB`
 		} else {
-			return `${(bytes / 1024 ** 3).toFixed(2)} GB`
+			return `${(bytes / 1000 ** 3).toFixed(2)} GB`
 		}
 	}
-
+const formatUsed = (usedUp)=>{
+	if (usedUp < 1000) {
+		return `${usedUp} Bytes`
+	} else if (usedUp < 1000 ** 2) {
+		return `${(usedUp / 1000).toFixed(2)} KB`
+	} else if (usedUp < 1000 ** 3) {
+		return `${(usedUp / 1000 ** 2).toFixed(2)} MB`
+	} else {
+		return `${(usedUp / 1000 ** 3).toFixed(2)} GB`
+	}
+}
 	// code to format the sizes to appopriate mb gb kb
-	const formatedUsed = formatFileSize(used)
+	const realUsed = formatUsed(used)
+	console.log(used)
 	const docSize = formatFileSize(eachSize.documents)
 	const imageSize = formatFileSize(eachSize.images)
 	const audioSize = formatFileSize(eachSize.audio)
 	const otherSize = formatFileSize(eachSize.others)
- setUsedMemory(formatedUsed)
+ setUsedMemory(realUsed)
 	return (
 		<React.Fragment>
 			{loading ? (
@@ -56,25 +66,25 @@ const StorageDetails = ({ used, eachSize, files, loading }) => {
 					<div className='flex flex-col w-full h-ful gap-y-2 rounded-xl p-2 border'>
 						{/* meter */}
 						<h1 className='text-xl lg:text-3xl font-extrabold'>
-							{formatedUsed} <span className='text-sm font-normal mx-1'>of </span>
+							{usedMemory} <span className='text-sm font-normal mx-1'>of </span>
 							50MB <span className='text-sm font-normal'>used </span>
 						</h1>
 						<div className='w-full h-2.5 bg-black/5 rounded-full overflow-hidden flex'>
 							<div
 								className='h-full rounded-e-full  bg-violet-600 z-[4]'
-								style={{ width: XDOCUMENT_PERCENTAGE }}
+								style={{ width: DOCUMENT_PERCENTAGE }}
 							></div>
 							<div
 								className='h-full bg-green-600 -ml-1 rounded-e-full z-[3]'
-								style={{ width: XIMAGE_PERCENTAGE }}
+								style={{ width: IMAGE_PERCENTAGE }}
 							></div>
 							<div
 								className='h-full bg-yellow-400 rounded-e-full -ml-1 z-[2]'
-								style={{ width: XAUDIO_PERCENTAGE }}
+								style={{ width: AUDIO_PERCENTAGE }}
 							></div>
 							<div
 								className='h-full bg-gray-400 rounded-e-full -ml-1 z-[1]'
-								style={{ width: XOTHERS_PERCENTAGE }}
+								style={{ width: OTHERS_PERCENTAGE }}
 							></div>
 						</div>
 						<div className='w-full flex items-center justify-between text-xs'>

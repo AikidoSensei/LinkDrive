@@ -4,9 +4,10 @@ import { Loader, Loader2, Trash2, TrashIcon } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { createClient } from '@supabase/supabase-js'
 import { ToastAction } from '../ui/toast'
-import { doc, getFirestore, deleteDoc } from 'firebase/firestore'
+import { doc, getFirestore, deleteDoc, increment, updateDoc, getDoc, } from 'firebase/firestore'
 import { app } from '@/configuration/FirebaseConfig'
 import { RefreshContext } from '@/context/RefreshContext'
+import { useSession } from 'next-auth/react'
 
 
 const supabase = createClient(
@@ -15,9 +16,9 @@ const supabase = createClient(
 )
 
 
-const DeleteModal = ({name, id, trash, trashState}) => {
+const DeleteModal = ({name, id, trash, trashState, fileSize}) => {
 const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
-
+const {data:session} = useSession()
  const db = getFirestore(app)
 
 const handleDelete = async (name,id) => {
@@ -74,6 +75,17 @@ const handleDelete = async (name,id) => {
 				variant: 'default',
 				title: 'File Deleted Successfully',
 				description: name + ' has been deleted', 
+			})
+			const userRef = doc(db, 'Users', session.user.email)
+
+			const userDoc = await getDoc(userRef)
+			const currentStorage = userDoc.data().storageUsed || 0
+
+			const newStorage = Math.max(0, currentStorage - fileSize)
+
+			// Update the user's storageUsed
+			await updateDoc(userRef, {
+				storageUsed: newStorage,
 			})
 	setRefreshTrigger(!refreshTrigger)
 	} catch (error) {

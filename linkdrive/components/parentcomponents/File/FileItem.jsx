@@ -216,6 +216,7 @@ const handleTrash = async (id, trash) => {
 							id={file.id}
 							trash={()=>handleTrash(file.id, file.trash)}
 							trashState={file.trash}
+							fileSize={file.size}
 						/>
 					</AlertDialog>
 				</DropdownMenu.Content>
