@@ -12,6 +12,7 @@ import {
   CloudOff,
   MoveLeft,
   MoveRight,
+  PanelRight,
   Search,
 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
@@ -83,9 +84,7 @@ window.removeEventListener("online", updateNetState);
 						</BreadcrumbItem>
 						<BreadcrumbSeparator className='hidden md:block' />
 						<BreadcrumbItem className='hidden md:block text-xs'>
-							<BreadcrumbPage>
-								{crumb}
-							</BreadcrumbPage>
+							<BreadcrumbPage>{crumb}</BreadcrumbPage>
 						</BreadcrumbItem>
 					</BreadcrumbList>
 				</Breadcrumb>
@@ -125,6 +124,9 @@ window.removeEventListener("online", updateNetState);
 						text={'No network connection'}
 					/>
 				)}
+			</div>
+			<div className=' flex p-1.5 hover:bg-black/5 justify-left text-xs text-black rounded-md' onClick={()=>props.storage()}>
+				<PanelRight size={16} />
 			</div>
 		</div>
 	)

@@ -73,7 +73,7 @@ const SideBarComponent = () => {
 	const [open, setOpen] = useState(false)
 	return (
 		<Sidebar className='border-0 bg-white'>
-			<SidebarHeader>
+			<SidebarHeader className='border-b'>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton size='lg' asChild>
@@ -82,11 +82,11 @@ const SideBarComponent = () => {
 									<img
 										src='/linkdrive-logo.png'
 										alt='LinkDrive Logo'
-										width={30}
-										height={30}
+										width={50}
+										height={50}
 									/>
 								</div>
-								<p className='text-lg font-bold text-black'>LinkDrive</p>
+								<p className='text-3xl font-bold text-black'>LinkDrive</p>
 							</a>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
@@ -125,7 +125,7 @@ const SideBarComponent = () => {
 										asChild
 										className={`relative h-8 flex items-center px-3 rounded-md transition-all duration-200  ${
 											router.pathname === item.url &&
-											`bg-green-500/5  before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:h-2 before:rounded-lg before:bg-${item.color}`
+											`bg-green-500/15 before:content-[''] before:absolute before:left-[3px] before:top-0 before:bottom-0 before:w-1.5 before:h-full before:scale-50 before:rounded-lg before:bg-black`
 										}`}
 									>
 										<Link href={item.url} className='flex items-center gap-2'>
@@ -155,7 +155,7 @@ const SideBarComponent = () => {
 										</div>
 										<div className='w-full flex flex-col items-center'>
 											<div className='w-full h-1.5 bg-black/10 rounded-full overflow-hidden flex'>
-											<motion.div key={'bar'} initial={{scaleX:0}} animate={{scaleX:1}} transition={{delay:0.2, duration:1, type:'tween'}} style={{width:barWidth}} className={` bg-black h-full rounded-full origin-left`}></motion.div>
+											<motion.div key={'bar'} initial={{scaleX:0}} animate={{scaleX:1}} transition={{delay:0.2, duration:1, type:'tween'}} style={{width:barWidth}} className={` bg-green-500 h-full rounded-full origin-left`}></motion.div>
 											</div>
 											<p className='mt-2'>{formatSize(usedMemory.storageUsed)} of {formatSize(usedMemory.storageLimit)} used</p>
 										</div>

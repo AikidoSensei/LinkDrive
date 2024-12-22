@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react'
 import { toast } from '@/hooks/use-toast'
 import { RefreshContext } from '@/context/RefreshContext'
 import { Button } from '@/components/ui/button'
+import { ChevronsRight, PanelRight } from 'lucide-react'
 
 const StorageInfo = () => {
 	const { data: session } = useSession()
@@ -154,6 +155,7 @@ const StorageInfo = () => {
 	return (
 		<div className='bg-white'>
 			<UserInfo />
+			
 			<StorageDetails
 				used={used?.storageUsed}
 				limit={used?.storageLimit}
@@ -172,7 +174,7 @@ const StorageInfo = () => {
 							</p>
 							<p className='text-xs'>Standard plan offers 2GB of storage</p>
 						</div>
-						<Button className='bg-green-400 hover:bg-green-500 rounded-md text-white'>
+						<Button className='bg-black hover:bg-green-400 hover:animate-pulse rounded-md text-white'>
 							Upgrade
 						</Button>
 					</div>

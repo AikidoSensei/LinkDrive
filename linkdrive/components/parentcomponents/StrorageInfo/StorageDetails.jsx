@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { UsedContext } from '@/context/UsedContext'
 import { AudioLines, File, Image, List, Video } from 'lucide-react'
 import React, { useContext, useEffect } from 'react'
-
+import {motion} from 'framer-motion'
 const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 	console.log(used, limit)
 	const { usedMemory, setUsedMemory } = useContext(UsedContext)
@@ -75,22 +75,34 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 							{realLimit} <span className='text-sm font-normal'>used </span>
 						</h1>
 						<div className='w-full h-2.5 bg-black/5 rounded-full overflow-hidden flex'>
-							<div
-								className='h-full rounded-e-full  bg-violet-600 z-[4]'
+							<motion.div
+								initial={{ scaleX: 0 }}
+								animate={{ scaleX: 1 }}
+								transition={{ duration: 0.2, delay:0 }}
+								className='h-full rounded-e-full  bg-violet-600 z-[4] origin-left'
 								style={{ width: DOCUMENT_PERCENTAGE }}
-							></div>
-							<div
-								className='h-full bg-green-600 -ml-1 rounded-e-full z-[3]'
+							></motion.div>
+							<motion.div
+								initial={{ scaleX: 0 }}
+								animate={{ scaleX: 1 }}
+								transition={{ duration: 0.2, delay:0.2, }}
+								className='h-full bg-green-600 -ml-1 rounded-e-full z-[3] origin-left'
 								style={{ width: IMAGE_PERCENTAGE }}
-							></div>
-							<div
-								className='h-full bg-yellow-400 rounded-e-full -ml-1 z-[2]'
+							></motion.div>
+							<motion.div
+								initial={{ scaleX: 0 }}
+								animate={{ scaleX: 1 }}
+								transition={{ duration: 0.2, delay:0.4 }}
+								className='h-full bg-yellow-400 rounded-e-full -ml-1 z-[2] origin-left'
 								style={{ width: AUDIO_PERCENTAGE }}
-							></div>
-							<div
-								className='h-full bg-gray-400 rounded-e-full -ml-1 z-[1]'
+							></motion.div>
+							<motion.div
+								initial={{ scaleX: 0 }}
+								animate={{ scaleX: 1 }}
+								transition={{ duration: 0.2, delay:0.6 }}
+								className='h-full bg-gray-400 rounded-e-full -ml-1 z-[1] origin-left'
 								style={{ width: OTHERS_PERCENTAGE }}
-							></div>
+							></motion.div>
 						</div>
 						<div className='w-full flex items-center justify-between text-xs'>
 							<div className='w-1/3 flex items-center gap-2'>
