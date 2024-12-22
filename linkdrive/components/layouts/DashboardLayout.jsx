@@ -13,11 +13,11 @@ const DashboardLayout = ({ children }) => {
 	return (
 		<div className='w-full h-full flex '>
 			<SideBarComponent />
-			<div className=' w-full grid  md:grid-cols-3 bg-white border-black h-screen'>
+			<div className=' w-full grid  md:grid-cols-3 bg-white border-black min-h-screen overflow-y-scroll'>
 				{/* Sidebar */}
 
 				{/* Main Content */}
-				<div className='col-span-2 gap-0 border-r h-full min-h-screen  overflow-hidden '>
+				<div className='col-span-2 gap-0 border-r h-full min-h-screen overflow-y-scroll '>
 					<div className={`'h-max w-full flex items-center '`}>
 						<SearchBar path={path} />
 					</div>

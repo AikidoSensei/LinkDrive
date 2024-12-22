@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
 	Sidebar,
@@ -57,6 +57,18 @@ const items = [
 const SideBarComponent = () => {
 	const router = useRouter()
 	const { usedMemory, setUsedMemory } = useContext(UsedContext)
+	const formatSize = (usedUp) => {
+		if (usedUp < 1000) {
+			return `${usedUp} Bytes`
+		} else if (usedUp < 1000 ** 2) {
+			return `${(usedUp / 1000).toFixed(2)} KB`
+		} else if (usedUp < 1000 ** 3) {
+			return `${(usedUp / 1000 ** 2).toFixed(2)} MB`
+		} else {
+			return `${(usedUp / 1000 ** 3).toFixed(2)} GB`
+		}
+	}
+	const barWidth = Math.round(((usedMemory?.storageUsed/usedMemory?.storageLimit) * 100)).toString()+'%'
 
 	const [open, setOpen] = useState(false)
 	return (
@@ -143,12 +155,9 @@ const SideBarComponent = () => {
 										</div>
 										<div className='w-full flex flex-col items-center'>
 											<div className='w-full h-1.5 bg-black/10 rounded-full overflow-hidden flex'>
-												<div className='h-full rounded-e-full  bg-violet-600 z-[4]'></div>
-												<div className='h-full bg-green-600 -ml-1 rounded-e-full z-[3]'></div>
-												<div className='h-full bg-yellow-400 rounded-e-full -ml-1 z-[2]'></div>
-												<div className='h-full bg-gray-400 rounded-e-full -ml-1 z-[1]'></div>
+											<motion.div key={'bar'} initial={{scaleX:0}} animate={{scaleX:1}} transition={{delay:0.2, duration:1, type:'tween'}} style={{width:barWidth}} className={` bg-black h-full rounded-full origin-left`}></motion.div>
 											</div>
-											<p className='mt-2'>{usedMemory} of 50MB used</p>
+											<p className='mt-2'>{formatSize(usedMemory.storageUsed)} of {formatSize(usedMemory.storageLimit)} used</p>
 										</div>
 									</motion.div>}
 								</AnimatePresence>

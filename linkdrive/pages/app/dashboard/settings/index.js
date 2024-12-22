@@ -44,6 +44,7 @@ import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
 import link from '@/public/black-link.json'
 import { BreadCrumbContext } from '@/context/BreadCrumbContext'
+import { UsedContext } from '@/context/UsedContext'
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 
@@ -52,12 +53,23 @@ const Settings = () => {
 	const db = getFirestore(app)
 	const { data: session, status } = useSession()
 	const { crumb, setCrumb } = useContext(BreadCrumbContext)
-
 	const [config, setConfig] = useState({
 		view: true,
 		defaultFolder: true,
 	})
-
+const { usedMemory, setUsedMemory } = useContext(UsedContext)
+const formatSize = (usedUp) => {
+	if (usedUp < 1000) {
+		return `${usedUp} Bytes`
+	} else if (usedUp < 1000 ** 2) {
+		return `${(usedUp / 1000).toFixed(2)} KB`
+	} else if (usedUp < 1000 ** 3) {
+		return `${(usedUp / 1000 ** 2).toFixed(2)} MB`
+	} else {
+		return `${(usedUp / 1000 ** 3).toFixed(2)} GB`
+	}
+}
+const formatedSize = formatSize(usedMemory?.storageLimit)
 	useEffect(() => {
 		setCrumb('Settings')
 		if (status === 'unauthenticated') {
@@ -425,7 +437,7 @@ const Settings = () => {
 				</div>
 				<div className='p-2 border border-slate-100 rounded-xl h-14 w-full flex justify-between items-center mt-20'>
 					<p>Memory Allocated</p>
-					<h2 className='font-bold text-lg select-none'>50MB</h2>
+					<h2 className='font-bold text-lg select-none'>{formatedSize}</h2>
 				</div>
 				<div className='p-2 border border-slate-100 rounded-xl h-14 w-full flex justify-between items-center'>
 					<p>Sign Out</p>

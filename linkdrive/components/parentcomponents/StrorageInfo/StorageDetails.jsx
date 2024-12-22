@@ -2,31 +2,30 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { UsedContext } from '@/context/UsedContext'
 import { AudioLines, File, Image, List, Video } from 'lucide-react'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
-const StorageDetails = ({ used, eachSize, files, loading }) => {
+const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
+	console.log(used, limit)
 	const { usedMemory, setUsedMemory } = useContext(UsedContext)
 	const { documents, images, audio, others } = files
 	const percentageConverter = (bytes, denominator) => {
-		return (bytes / denominator) * 100 ;
+		return (bytes / denominator) * 100
 	}
 	let DOCUMENT_PERCENTAGE = percentageConverter(eachSize.documents, 50000000)
 	let IMAGE_PERCENTAGE = percentageConverter(eachSize.images, 50000000)
 	let AUDIO_PERCENTAGE = percentageConverter(eachSize.audio, 50000000)
 	let OTHERS_PERCENTAGE = percentageConverter(eachSize.others, 50000000)
- 
-  const XDOCUMENT_PERCENTAGE = (DOCUMENT_PERCENTAGE * 0.2).toString()+'%'
-  const XIMAGE_PERCENTAGE = (IMAGE_PERCENTAGE * 0.2).toString() + '%'
-  const XAUDIO_PERCENTAGE = (AUDIO_PERCENTAGE * 0.2).toString() + '%'
-  const XOTHERS_PERCENTAGE = (OTHERS_PERCENTAGE * 0.2).toString() + '%'
-  
-  DOCUMENT_PERCENTAGE = DOCUMENT_PERCENTAGE.toString()+'%';
-  IMAGE_PERCENTAGE = IMAGE_PERCENTAGE.toString()+'%';
-  AUDIO_PERCENTAGE = AUDIO_PERCENTAGE.toString()+'%';
-  OTHERS_PERCENTAGE = OTHERS_PERCENTAGE.toString()+'%';
-  
-  
-  
+
+	const XDOCUMENT_PERCENTAGE = (DOCUMENT_PERCENTAGE * 0.2).toString() + '%'
+	const XIMAGE_PERCENTAGE = (IMAGE_PERCENTAGE * 0.2).toString() + '%'
+	const XAUDIO_PERCENTAGE = (AUDIO_PERCENTAGE * 0.2).toString() + '%'
+	const XOTHERS_PERCENTAGE = (OTHERS_PERCENTAGE * 0.2).toString() + '%'
+
+	DOCUMENT_PERCENTAGE = DOCUMENT_PERCENTAGE.toString() + '%'
+	IMAGE_PERCENTAGE = IMAGE_PERCENTAGE.toString() + '%'
+	AUDIO_PERCENTAGE = AUDIO_PERCENTAGE.toString() + '%'
+	OTHERS_PERCENTAGE = OTHERS_PERCENTAGE.toString() + '%'
+
 	const formatFileSize = (bytes) => {
 		if (bytes < 1000) {
 			return `${bytes} Bytes`
@@ -38,25 +37,31 @@ const StorageDetails = ({ used, eachSize, files, loading }) => {
 			return `${(bytes / 1000 ** 3).toFixed(2)} GB`
 		}
 	}
-const formatUsed = (usedUp)=>{
-	if (usedUp < 1000) {
-		return `${usedUp} Bytes`
-	} else if (usedUp < 1000 ** 2) {
-		return `${(usedUp / 1000).toFixed(2)} KB`
-	} else if (usedUp < 1000 ** 3) {
-		return `${(usedUp / 1000 ** 2).toFixed(2)} MB`
-	} else {
-		return `${(usedUp / 1000 ** 3).toFixed(2)} GB`
+	const formatUsed = (usedUp) => {
+		if (usedUp < 1000) {
+			return `${usedUp} Bytes`
+		} else if (usedUp < 1000 ** 2) {
+			return `${(usedUp / 1000).toFixed(2)} KB`
+		} else if (usedUp < 1000 ** 3) {
+			return `${(usedUp / 1000 ** 2).toFixed(2)} MB`
+		} else {
+			return `${(usedUp / 1000 ** 3).toFixed(2)} GB`
+		}
 	}
-}
 	// code to format the sizes to appopriate mb gb kb
 	const realUsed = formatUsed(used)
-	console.log(used)
+	const realLimit = formatFileSize(limit)
 	const docSize = formatFileSize(eachSize.documents)
 	const imageSize = formatFileSize(eachSize.images)
 	const audioSize = formatFileSize(eachSize.audio)
 	const otherSize = formatFileSize(eachSize.others)
- setUsedMemory(realUsed)
+	useEffect(() => {
+		setUsedMemory({
+			storageUsed: used || 0,
+			storageLimit: limit || 50 * 1000 * 1000,
+		})
+	}, [realUsed, realLimit, setUsedMemory]) 
+
 	return (
 		<React.Fragment>
 			{loading ? (
@@ -65,9 +70,9 @@ const formatUsed = (usedUp)=>{
 				<div className='w-full  text-black p-4 mt-8 '>
 					<div className='flex flex-col w-full h-ful gap-y-2 rounded-xl p-2 border'>
 						{/* meter */}
-						<h1 className='text-xl lg:text-3xl font-extrabold'>
-							{usedMemory} <span className='text-sm font-normal mx-1'>of </span>
-							50MB <span className='text-sm font-normal'>used </span>
+						<h1 className='text-xl lg:text-2xl line-clamp-1 font-extrabold'>
+							{realUsed} <span className='text-sm font-normal'>of </span>
+							{realLimit} <span className='text-sm font-normal'>used </span>
 						</h1>
 						<div className='w-full h-2.5 bg-black/5 rounded-full overflow-hidden flex'>
 							<div

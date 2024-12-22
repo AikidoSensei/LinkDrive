@@ -31,7 +31,7 @@ export default function App({
 	const [parentFolderId, setParentFolderId] = useState(false)
 	const [refreshTrigger, setRefreshTrigger] = useState()
 	const [crumb, setCrumb] = useState('')
-	const [usedMemory, setUsedMemory] = useState(0)
+	const [usedMemory, setUsedMemory] = useState({})
 const getLayout = Component.getLayout || ((page) => page)
 	return (
 		<SessionProvider session={session}>

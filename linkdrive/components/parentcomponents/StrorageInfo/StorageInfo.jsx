@@ -4,6 +4,8 @@ import UserInfo from './UserInfo'
 import StorageDetails from './StorageDetails'
 import {
 	collection,
+	doc,
+	getDoc,
 	getDocs,
 	getFirestore,
 	query,
@@ -38,6 +40,7 @@ const StorageInfo = () => {
 	useEffect(() => {
 		if (session) {
 			getUserFiles()
+			getUserStorageInfo(session.user.email)
 		}
 	}, [session, refreshTrigger])
 
@@ -125,11 +128,35 @@ const StorageInfo = () => {
 			setLoading(false)
 		}
 	}
+	const getUserStorageInfo = async (userEmail) => {
+		const db = getFirestore(app)
+
+		try {
+			const userRef = doc(db, 'Users', userEmail)
+			const userDoc = await getDoc(userRef)
+
+			if (userDoc.exists()) {
+				const { storageUsed, storageLimit } = userDoc.data()
+				setUsed({
+					storageUsed: storageUsed || 0,
+					storageLimit: storageLimit || 50 * 1000 * 1000,
+				})
+				
+			} else {
+				console.warn('User document does not exist.')
+				return { storageUsed: 0, storageLimit: 50 * 1024 * 1024 } 
+			}
+		} catch (error) {
+			console.error('Error fetching user storage info:', error)
+			throw new Error('Unable to fetch storage info.')
+		}
+	}
 	return (
 		<div className='bg-white'>
 			<UserInfo />
 			<StorageDetails
-				used={used}
+				used={used?.storageUsed}
+				limit={used?.storageLimit}
 				eachSize={sizes}
 				files={numberOfFiles}
 				loading={loading}

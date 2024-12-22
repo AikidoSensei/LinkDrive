@@ -21,6 +21,7 @@ import { doc, getFirestore, updateDoc } from 'firebase/firestore'
 import { RefreshContext } from '@/context/RefreshContext'
 import { app } from '@/configuration/FirebaseConfig'
 import { toast } from '@/hooks/use-toast'
+import Image from 'next/image'
 
 const FileItem = ({ file, view }) => {
 	const db = getFirestore(app)
@@ -31,9 +32,17 @@ const FileItem = ({ file, view }) => {
 
 		if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(type)) {
 			return <ImageIcon />
-		} else if (type === 'pdf') {
+		} 
+		else if (type === 'pdf') {
 			return <PdfIcon />
-		} else if (
+		} 
+		else if (['mp3', 'wav', 'm4a', 'ogg', 'flac', 'aac'].includes(type)) {
+			return <AudioIcon/>
+		} 
+		else if (['ppt', 'pptx',].includes(type)) {
+			return <PptIcon/>
+		} 
+		else if (
 			['docx', 'doc', 'txt', 'ppt', 'pptx', 'xlsx', 'csv'].includes(type)
 		) {
 			return <DocIcon />
@@ -317,6 +326,88 @@ const DocIcon = () => {
 				d='m14.24 53.86h-3a1.08 1.08 0 0 1 -1.08-1.08v-9.85a1.08 1.08 0 0 1 1.08-1.08h3a6 6 0 1 1 0 12zm0-10.67h-2.61v9.34h2.61a4.41 4.41 0 0 0 4.61-4.66 4.38 4.38 0 0 0 -4.61-4.68zm14.42 10.89a5.86 5.86 0 0 1 -6-6.21 6 6 0 1 1 11.92 0 5.87 5.87 0 0 1 -5.92 6.21zm0-11.09c-2.7 0-4.41 2.07-4.41 4.88s1.71 4.88 4.41 4.88 4.41-2.09 4.41-4.88-1.72-4.87-4.41-4.87zm18.45.38a.75.75 0 0 1 .2.52.71.71 0 0 1 -.7.72.64.64 0 0 1 -.51-.24 4.06 4.06 0 0 0 -3-1.38 4.61 4.61 0 0 0 -4.63 4.88 4.63 4.63 0 0 0 4.63 4.88 4 4 0 0 0 3-1.37.7.7 0 0 1 .51-.24.72.72 0 0 1 .7.74.78.78 0 0 1 -.2.51 5.33 5.33 0 0 1 -4 1.69 6.22 6.22 0 0 1 0-12.43 5.26 5.26 0 0 1 4 1.72z'
 				fill='#ffffff'
 			/>
+		</svg>
+	)
+}
+const AudioIcon = () => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			x='0px'
+			y='0px'
+	
+			viewBox='0 0 48 48'
+		>
+			<path
+				fill='#ed3675'
+				d='M20,24c-5.523,0-10,4.477-10,10s4.477,10,10,10s10-4.477,10-10S25.523,24,20,24z'
+			></path>
+			<linearGradient
+				id='thMIbMD7~VnYoyixFJ5D6a_p6vT9rfwUGw6_gr1'
+				x1='30'
+				x2='41'
+				y1='8'
+				y2='8'
+				gradientUnits='userSpaceOnUse'
+			>
+				<stop offset='0' stop-color='#bd1949'></stop>
+				<stop offset='.108' stop-color='#c31a4b'></stop>
+				<stop offset='.38' stop-color='#ca1b4d'></stop>
+				<stop offset='1' stop-color='#cc1b4e'></stop>
+			</linearGradient>
+			<path
+				fill='url(#thMIbMD7~VnYoyixFJ5D6a_p6vT9rfwUGw6_gr1)'
+				d='M39,12h-9V4h9c1.105,0,2,0.895,2,2v4C41,11.105,40.105,12,39,12z'
+			></path>
+			<path fill='#ed3675' d='M30,4h-2c-2.209,0-4,1.791-4,4v26h6V4z'></path>
+		</svg>
+	)
+}
+const PptIcon = ()=>{
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			x='0px'
+			y='0px'
+			viewBox='0 0 48 48'
+		>
+			<path
+				fill='#d35230'
+				d='M8,24c0,9.941,8.059,18,18,18s18-8.059,18-18H26H8z'
+			></path>
+			<path fill='#ff8f6b' d='M26,6v18h18C44,14.059,35.941,6,26,6z'></path>
+			<path fill='#ed6c47' d='M26,6C16.059,6,8,14.059,8,24h18V6z'></path>
+			<path
+				d='M26,16.681C26,14.648,24.352,13,22.319,13H11.774C9.417,16.044,8,19.852,8,24	c0,5.116,2.145,9.723,5.571,13h8.747C24.352,37,26,35.352,26,33.319V16.681z'
+				opacity='.05'
+			></path>
+			<path
+				d='M22.213,13.333H11.525C9.32,16.321,8,20.002,8,24c0,4.617,1.753,8.814,4.611,12h9.602	c1.724,0,3.121-1.397,3.121-3.121V16.454C25.333,14.731,23.936,13.333,22.213,13.333z'
+				opacity='.07'
+			></path>
+			<path
+				d='M22.106,13.667H11.276C9.218,16.593,8,20.151,8,24c0,4.148,1.417,7.956,3.774,11h10.332	c1.414,0,2.56-1.146,2.56-2.56V16.227C24.667,14.813,23.52,13.667,22.106,13.667z'
+				opacity='.09'
+			></path>
+			<linearGradient
+				id='N~uyq1CljjkKMh72IFt0Fa_ifP93G7BXUhU_gr1'
+				x1='4.586'
+				x2='22.77'
+				y1='14.586'
+				y2='32.77'
+				gradientUnits='userSpaceOnUse'
+			>
+				<stop offset='0' stop-color='#ca4e2a'></stop>
+				<stop offset='1' stop-color='#b63016'></stop>
+			</linearGradient>
+			<path
+				fill='url(#N~uyq1CljjkKMh72IFt0Fa_ifP93G7BXUhU_gr1)'
+				d='M22,34H6c-1.105,0-2-0.895-2-2V16c0-1.105,0.895-2,2-2h16c1.105,0,2,0.895,2,2v16	C24,33.105,23.105,34,22,34z'
+			></path>
+			<path
+				fill='#fff'
+				d='M14.673,19.012H10v10h2.024v-3.521H14.3c1.876,0,3.397-1.521,3.397-3.397v-0.058	C17.697,20.366,16.343,19.012,14.673,19.012z M15.57,22.358c0,0.859-0.697,1.556-1.556,1.556h-1.99v-3.325h1.99	c0.859,0,1.556,0.697,1.556,1.556V22.358z'
+			></path>
 		</svg>
 	)
 }
