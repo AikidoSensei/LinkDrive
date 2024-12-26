@@ -31,14 +31,16 @@ const login = () => {
 				animate={{ opacity: 1, scale: 1 }}
 				transition={{ duration: 0.3 }}
 			>
-				<Lottie
-					animationData={link2}
-					autoplay={true}
-					loop={false}
-					className=' w-[60px] md:w-[150px] '
-				/>
+				<a href='/'>
+					<Lottie
+						animationData={link2}
+						autoplay={true}
+						loop={false}
+						className=' w-[60px] md:w-[150px] '
+					/>
+				</a>
 				<h1 className='text-2xl font-bold text-center mb-6 text-black'>
-					Welcome Back to <span className='text-green-400'>LinkDrive</span>
+					Welcome Back to <a href='/'><span className='text-green-400'>LinkDrive</span></a>
 				</h1>
 				<p className='text-sm text-center text-black/60 mb-6'>
 					Please sign in to continue to your all-in-one storage platform.
