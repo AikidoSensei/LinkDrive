@@ -78,7 +78,7 @@ const SideBarComponent = () => {
 				<SidebarMenu>
 					<SidebarMenuItem className=''>
 						<SidebarMenuButton asChild>
-							<a href='#'>
+							<div >
 								<div className=''>
 									<Image
 										src='/linkdrive-logo.png'
@@ -88,7 +88,7 @@ const SideBarComponent = () => {
 									/>
 								</div>
 								<p className='text-3xl font-bold text-black'>link<span className='text-green-500'>drive</span></p>
-							</a>
+							</div>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
