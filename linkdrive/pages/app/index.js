@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import link from '@/public/black-link.json'
+import Head from 'next/head'
 
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
