@@ -1,3 +1,4 @@
+"use client"
 import React, { useContext, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -78,16 +79,20 @@ const SideBarComponent = () => {
 				<SidebarMenu>
 					<SidebarMenuItem className=''>
 						<SidebarMenuButton>
-							<div  className='flex'>
+							<div className='flex'>
 								<div className=''>
 									<Image
 										src='/images/linkdrive-logo.png'
 										alt='LinkDrive Logo'
+										width={40}
+										height={40}
 										unoptimized
 										className='w-10 h-10'
 									/>
 								</div>
-								<p className='text-3xl font-bold text-black'>link<span className='text-green-500'>drive</span></p>
+								<p className='text-3xl font-bold text-black'>
+									link<span className='text-green-500'>drive</span>
+								</p>
 							</div>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
@@ -140,34 +145,64 @@ const SideBarComponent = () => {
 								className={`
 									 h-8 flex items-center justify-between px-3 rounded-md transition-all duration-200 hover:bg-black/5 cursor-pointer  ${
 											router.pathname === '/app/dashboard/storage' &&
-											`bg-green-500/15 before:content-[''] before:absolute before:left-[3px] before:top-0 before:bottom-0 before:w-1.5 before:h-full before:scale-50 before:rounded-lg before:bg-black`}`
-								}
-								onClick={()=>setOpen(!open)}
+											`bg-green-500/15 before:content-[''] before:absolute before:left-[3px] before:top-0 before:bottom-0 before:w-1.5 before:h-full before:scale-50 before:rounded-lg before:bg-black`
+										}`}
+								onClick={() => setOpen(!open)}
 							>
 								<p className='flex'>
 									<CloudIcon className='mr-2 rotate-' size={16} /> Storage
 								</p>
-								<ChevronRight className={`${open?'-rotate-90':'rotate-90'} duration-200`} size={16} />
+								<ChevronRight
+									className={`${
+										open ? '-rotate-90' : 'rotate-90'
+									} duration-200`}
+									size={16}
+								/>
 							</SidebarMenuItem>
 							<div className='w-full h-full overflow-hidden'>
 								<AnimatePresence>
-									{open&&<motion.div key='storage' initial={{y:-100}} animate={{y:0}} exit={{y:-100}} transition={{type:'tween'}} className='w-full h-max border rounded-xl p-2 flex flex-col justify-between gap-4'>
-										<div className='w-full p-4 bg-black rounded-xl h-14 text-md text-white '>
-											<div className='h-1 w-3 rounded-full bg-white mr-2'></div>
-											Free Tier <span className='font-bold text-md'>Basic</span>
-										</div>
-										<div className='w-full flex flex-col items-center'>
-											<div className='w-full h-1.5 bg-black/10 rounded-full overflow-hidden flex'>
-											<motion.div key={'bar'} initial={{scaleX:0}} animate={{scaleX:1}} transition={{delay:0.2, duration:1, type:'tween'}} style={{width:barWidth}} className={` bg-green-500 h-full rounded-full origin-left`}></motion.div>
+									{open && (
+										<motion.div
+											key='storage'
+											initial={{ y: -100 }}
+											animate={{ y: 0 }}
+											exit={{ y: -100 }}
+											transition={{ type: 'tween' }}
+											className='w-full h-max border rounded-xl p-2 flex flex-col justify-between gap-4'
+										>
+											<div className='w-full p-4 bg-black rounded-xl h-14 text-md text-white '>
+												<div className='h-1 w-3 rounded-full bg-white mr-2'></div>
+												Free Tier{' '}
+												<span className='font-bold text-md'>Basic</span>
 											</div>
-											<p className='mt-2'>{formatSize(usedMemory.storageUsed)} of {formatSize(usedMemory.storageLimit)} used</p>
-											<Link href='/app/dashboard/storage' className='w-full h-10 border rounded-xl flex items-center justify-center' 
-											
-											>
-												view more
-											</Link>
-										</div>
-									</motion.div>}
+											<div className='w-full flex flex-col items-center'>
+												<div className='w-full h-1.5 bg-black/10 rounded-full overflow-hidden flex'>
+													<motion.div
+														key={'bar'}
+														initial={{ scaleX: 0 }}
+														animate={{ scaleX: 1 }}
+														transition={{
+															delay: 0.2,
+															duration: 1,
+															type: 'tween',
+														}}
+														style={{ width: barWidth }}
+														className={` bg-green-500 h-full rounded-full origin-left`}
+													></motion.div>
+												</div>
+												<p className='mt-2'>
+													{formatSize(usedMemory.storageUsed)} of{' '}
+													{formatSize(usedMemory.storageLimit)} used
+												</p>
+												<Link
+													href='/app/dashboard/storage'
+													className='w-full h-10 border rounded-xl flex items-center justify-center'
+												>
+													view more
+												</Link>
+											</div>
+										</motion.div>
+									)}
 								</AnimatePresence>
 							</div>
 						</SidebarMenu>
