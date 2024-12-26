@@ -82,7 +82,7 @@ const SideBarComponent = () => {
 							<div className='flex'>
 								<div className=''>
 									<Image
-										src='/images/linkdrive-logo.png'
+										src='/images/linkdrivelogo.png'
 										alt='LinkDrive Logo'
 										width={40}
 										height={40}
