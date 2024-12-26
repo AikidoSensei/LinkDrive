@@ -77,8 +77,8 @@ const SideBarComponent = () => {
 			<SidebarHeader className='border-b h-14'>
 				<SidebarMenu>
 					<SidebarMenuItem className=''>
-						<SidebarMenuButton asChild>
-							<div >
+						<SidebarMenuButton>
+							<div  className='flex'>
 								<div className=''>
 									<Image
 										src='/static/images/linkdrive-logo.png'
