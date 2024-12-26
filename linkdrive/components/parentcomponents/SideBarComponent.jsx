@@ -32,7 +32,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { UsedContext } from '@/context/UsedContext'
 import Image from 'next/image'
-import logo from '../../public/static/images/linkdrive-logo.png'
+import logo from '../../public/images/linkdrive-logo.png'
 const items = [
 	{ title: 'Home', url: '/app/dashboard', icon: Home, color: 'black' },
 	{
@@ -80,9 +80,11 @@ const SideBarComponent = () => {
 						<SidebarMenuButton>
 							<div  className='flex'>
 								<div className=''>
-									<img
+									<Image
 										src={logo}
 										alt='LinkDrive Logo'
+										width={40}
+										height={40}
 										className='w-10 h-10'
 									/>
 								</div>

@@ -2,12 +2,12 @@
 const nextConfig = {
 	reactStrictMode: false,
 	images: {
+		unoptimized:true,
 		remotePatterns: [
 			{
 				protocol: 'https',
 				hostname: 'lh3.googleusercontent.com',
 			},
-			{ protocol: 'https', hostname: 'linkdrivecloud.vercel.app' },
 		],
 	},
 }
