@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import link2 from '@/public/link2.json'
+import Head from 'next/head'
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 
 const login = () => {
@@ -20,6 +21,10 @@ const login = () => {
 
 	return (
 		<div className='w-full h-screen bg-black/90 flex justify-center items-center'>
+			<Head>
+				<title>Login</title>
+			</Head>
+
 			<motion.div
 				className='bg-white p-10 rounded-xl shadow-xl flex flex-col items-center w-80 sm:w-96'
 				initial={{ opacity: 0, scale: 0.8 }}

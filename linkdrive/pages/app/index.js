@@ -21,6 +21,10 @@ useEffect(()=>{
 },[session])
   return (
 		<div className='w-screen h-screen flex justify-center items-center text-black bg-white'>
+			<Head>
+				<title>LinkDrive App</title>
+			</Head>
+
 			<div className='w-full col-span-2 flex justify-center items-center h-screen z-[1000] text-black'>
 				<div className='w-[100px] h-[100px] bg-black rounded-3xl flex items-center justify-center'>
 					<div className=' bg-white rounded-full shadow-xl p-1 w-[50px]'>

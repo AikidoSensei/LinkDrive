@@ -35,6 +35,7 @@ import { Input } from '@/components/ui/input'
 import { ToastAction } from '@/components/ui/toast'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 const supabase = createClient(
 	process.env.NEXT_PUBLIC_SUPABASE_URL,
 	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -302,6 +303,10 @@ const handleClearStorage = async () => {
 
 	return (
 		<div className='flex flex-col gap-4 '>
+			<Head>
+				<title>Storage</title>
+			</Head>
+
 			<div className='border-b p-4'>
 				<p className='text-xs lg:text-xl font-bold text-black mt-6'>
 					Memory Usage
@@ -317,9 +322,7 @@ const handleClearStorage = async () => {
 			/>
 			<div className='flex justify-between items-center py-1 px-4 ml-4 mr-4 rounded-xl border text-black'>
 				<p>Upgrade to standard</p>
-				<Button className=' h-10 text-white bg-green-600'>
-					Upgrade
-				</Button>
+				<Button className=' h-10 text-white bg-green-600'>Upgrade</Button>
 			</div>
 			<div className='flex justify-between items-center p-4 ml-4 mr-4 rounded-xl border text-black'>
 				<p>Clear My Storage</p>
@@ -346,7 +349,7 @@ const handleClearStorage = async () => {
 							variant='destructive'
 							className='border-2 border-red-500 outline-none text-red-500 '
 							value={clear}
-							onChange = {(e)=>setClear(e.target.value)}
+							onChange={(e) => setClear(e.target.value)}
 						/>
 						<AlertDialogFooter>
 							<AlertDialogCancel className='bg-black text-white outline-none hover:outline-none hover:bg-black hover:text-white'>

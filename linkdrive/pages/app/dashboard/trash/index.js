@@ -30,6 +30,7 @@ import { useRouter } from 'next/router'
 import link from '@/public/black-link.json'
 import { BreadCrumbContext } from '@/context/BreadCrumbContext'
 import { createClient } from '@supabase/supabase-js'
+import Head from 'next/head'
 const supabase = createClient(
 	process.env.NEXT_PUBLIC_SUPABASE_URL,
 	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -240,6 +241,10 @@ const handleRestoreTrash = async () => {
 	}
 return (
 	<div className='p-2 lg:p-5 mt-5 bg-white flex flex-col gap-0 min-h-[320px] h-full'>
+		<Head>
+			<title>Trash</title>
+		</Head>
+
 		<div className='flex justify-between items-center'>
 			<p className='text-xs lg:text-xl font-bold text-black'>{'Trash'}</p>
 			<div className='flex items-center gap-4 text-black'>

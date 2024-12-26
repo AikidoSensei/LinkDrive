@@ -38,6 +38,7 @@ import UserInfo from '@/components/parentcomponents/StrorageInfo/UserInfo'
 import DashboardLayout from '@/components/layouts/DashboardLayout'
 import link from '@/public/black-link.json'
 import { BreadCrumbContext } from '@/context/BreadCrumbContext'
+import Head from 'next/head'
 const geistSans = Geist({
 	variable: '--font-geist-sans',
 	subsets: ['latin'],
@@ -192,7 +193,9 @@ return (
 }
 	return (
 		<div className='w-full h-full'>
-
+<Head>
+	<title>Dashboard</title>
+</Head>
 					
 						<FolderList
 							data={folderList}

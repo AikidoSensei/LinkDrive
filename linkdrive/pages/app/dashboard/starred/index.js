@@ -17,6 +17,7 @@ import { useRouter } from 'next/router'
 import link from '@/public/black-link.json'
 import DashboardLayout from '@/components/layouts/DashboardLayout'
 import { BreadCrumbContext } from '@/context/BreadCrumbContext'
+import Head from 'next/head'
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 const Starred = () => {
@@ -68,6 +69,8 @@ const Starred = () => {
 	if (status === 'loading') {
 		return (
 			<div className='w-full col-span-2 flex justify-center items-center h-screen z-[1000] text-black'>
+				
+
 				<div className='w-[100px] h-[100px] bg-black rounded-3xl flex items-center justify-center'>
 					<div className=' bg-white rounded-full shadow-xl p-1 w-[50px]'>
 						<Lottie animationData={link} />
@@ -78,6 +81,9 @@ const Starred = () => {
 	}
 	return (
 		<div className='p-2 lg:p-5 mt-5 bg-white  flex flex-col gap-0 min-h-[320px] h-full'>
+			<Head>
+				<title>Starred</title>
+			</Head>
 			<div className='flex justify-between items-center'>
 				<p className='text-xs lg:text-xl font-bold text-black'>{'Favourite'}</p>
 				<div className='flex items-center gap-4 text-black'>

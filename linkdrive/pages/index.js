@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 import link2 from '@/public/link2.json'
 import { Button } from '@/components/ui/button'
 import { Instagram, Linkedin } from 'lucide-react'
+import Head from 'next/head'
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 
@@ -51,6 +52,10 @@ export default function MyHome() {
 
 	return (
 		<div className='w-full h-full flex flex-col text-black justify-center items-center bg-custom-pattern bg-cover bg-center p-0 overflow-y-hidden'>
+			<Head>
+				<title>Dashboard</title>
+			</Head>
+
 			<div className='w-full h-screen flex justify-center items-center bg-black/90 flex-col text-white p-6 gap-12'>
 				<h1 className='text-3xl md:text-6xl font-extrabold text-center leading-tight'>
 					Your All-in-One Storage Platform
@@ -123,7 +128,6 @@ export default function MyHome() {
 						className='w-full h-[300px] border border-white/40 rounded-xl bg-[radial-gradient(94%_98%_at_100%_100%,_#bf0b0b_-90%,_rgb(15,0,0)_100%)] p-4'
 						variants={squareVariants}
 					>
-			
 						<h1 className='text-lg md:text-2xl font-bold text-white'>
 							Fast Uploads
 						</h1>

@@ -47,6 +47,7 @@ import link from '@/public/black-link.json'
 import { BreadCrumbContext } from '@/context/BreadCrumbContext'
 import { UsedContext } from '@/context/UsedContext'
 import { createClient } from '@supabase/supabase-js'
+import Head from 'next/head'
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 const supabase = createClient(
@@ -375,6 +376,10 @@ const handleClearTrash = async () => {
 
 	return (
 		<div className='text-black flex flex-col overflow-y-scroll '>
+			<Head>
+				<title>Settings</title>
+			</Head>
+
 			<div className=' h-screen w-full overflow-y-scroll flex flex-col p-4 gap-y-4'>
 				<h1 className='font-bold text-xl'>Settings</h1>
 				<div className='p-2 border border-slate-100 rounded-xl h-14 w-full flex justify-between items-center'>
