@@ -85,6 +85,7 @@ const SideBarComponent = () => {
 										alt='LinkDrive Logo'
 										width={40}
 										height={40}
+										
 									/>
 								</div>
 								<p className='text-3xl font-bold text-black'>link<span className='text-green-500'>drive</span></p>
