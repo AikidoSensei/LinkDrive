@@ -26,7 +26,7 @@ setFilteredFolders(filter)
   return (
 		<div className='p-2 lg:p-5  bg-white border-t flex flex-col gap-0 min-h-[320px] h-max'>
 			<div className='flex justify-between items-center'>
-				<p className='text-xs lg:text-xl font-bold text-black'>
+				<p className='text-xs lg:text-xl font-normal lg:font-bold text-black'>
 					{'Recent Files'}
 				</p>
 				<div className='flex items-center gap-4 text-black'>

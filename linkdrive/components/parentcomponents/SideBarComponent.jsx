@@ -31,6 +31,7 @@ import NewFolderModal from './Folder/NewFolderModal'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { UsedContext } from '@/context/UsedContext'
+import Image from 'next/image'
 
 const items = [
 	{ title: 'Home', url: '/app/dashboard', icon: Home, color: 'black' },
@@ -79,7 +80,7 @@ const SideBarComponent = () => {
 						<SidebarMenuButton asChild>
 							<a href='#'>
 								<div className=''>
-									<img
+									<Image
 										src='/linkdrive-logo.png'
 										alt='LinkDrive Logo'
 										width={40}

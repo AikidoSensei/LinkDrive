@@ -82,7 +82,7 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 				<div className='w-full  text-black p-4 mt-8 '>
 					<div className='flex flex-col w-full h-ful gap-y-2 rounded-xl p-2 border'>
 						{/* meter */}
-						<h1 className='text-xl lg:text-2xl line-clamp-1 font-extrabold'>
+						<h1 className='text-xl lg:text-2xl line-clamp-1  lg:font-extrabold'>
 							{formatUsed(used)}{' '}
 							<span className='text-sm font-normal'>of </span>
 							{formatFileSize(limit)}{' '}
@@ -172,11 +172,11 @@ const Documents = ({ size, length, width }) => {
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm md:text-xl font-bold'>Documents</p>
+						<p className='text-sm md:text-xl font-normal lg:font-bold'>Documents</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-normal lg:font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div
@@ -199,11 +199,11 @@ const Images = ({ size, length, width }) => {
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm md:text-xl font-bold'>Images</p>
+						<p className='text-sm md:text-xl font-normal lg:font-bold'>Images</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-normal lg:font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div
@@ -225,11 +225,11 @@ const Audio = ({ size, length, width }) => {
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm md:text-xl font-bold'>Audio</p>
+						<p className='text-sm md:text-xl font-normal lg:font-bold'>Audio</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-normal lg:font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div
@@ -251,11 +251,11 @@ const Others = ({ size, length, width }) => {
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm md:text-xl font-bold'>Others</p>
+						<p className='text-sm md:text-xl font-normal lg:font-bold'>Others</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-normal lg:font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div

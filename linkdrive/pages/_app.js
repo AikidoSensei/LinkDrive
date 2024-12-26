@@ -9,14 +9,22 @@ import { useState } from 'react'
 import StorageInfo from '@/components/parentcomponents/StrorageInfo/StorageInfo'
 import { BreadCrumbContext } from '@/context/BreadCrumbContext'
 
-import { Roboto, Lato, Poppins } from 'next/font/google'
+import { Roboto, Lato, Poppins, Montserrat, Inter } from 'next/font/google'
 import { UsedContext } from '@/context/UsedContext'
 
 const roboto = Roboto({
 	weight: '400',
 	subsets: ['latin'],
 })
+const inter = Inter({
+	weight: '400',
+	subsets: ['latin'],
+})
 const lato = Lato({
+	weight: '400',
+	subsets: ['latin'],
+})
+const montserrat = Montserrat({
 	weight: '400',
 	subsets: ['latin'],
 })

@@ -35,7 +35,7 @@ const folderClick = (item)=>{
 	return (
 		<div className='p-2 lg:p-5 bg-white flex flex-col gap-0 min-h-[320px] h-max overflow-y-hidden '>
 			<div className='flex justify-between items-center'>
-				<p className='text-xs lg:text-xl font-bold text-black'>
+				<p className='text-xs lg:text-xl font-normal lg:font-bold text-black'>
 					{title || 'Recent Folders'}
 				</p>
 				<div className='flex items-center gap-4 text-black'>
