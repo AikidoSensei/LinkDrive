@@ -80,10 +80,10 @@ const SideBarComponent = () => {
 						<SidebarMenuButton>
 							<div  className='flex'>
 								<div className=''>
-									<img
+									<Image
 										src='/images/linkdrive-logo.png'
 										alt='LinkDrive Logo'
-				
+										unoptimized
 										className='w-10 h-10'
 									/>
 								</div>
