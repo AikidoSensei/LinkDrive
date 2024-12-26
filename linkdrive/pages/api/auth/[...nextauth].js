@@ -10,6 +10,8 @@ export const authOptions = {
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 		}),
 	],
+	secret: process.env.NEXTAUTH_SECRET,
+	pages: { signIn: '/login' },
 	callbacks: {
 		async signIn({ user }) {
 			const db = getFirestore(app)
@@ -31,7 +33,7 @@ export const authOptions = {
 					})
 				}
 
-				return true 
+				return true
 			} catch (error) {
 				console.error('Error storing user in Firestore:', error)
 				return false // Reject sign-in on Firestore error

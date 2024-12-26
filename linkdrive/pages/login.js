@@ -45,7 +45,7 @@ const login = () => {
 				</p>
 				<Button
 					className='bg-green-500 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-xl hover:bg-green-400 transition duration-300 ease-in-out w-full'
-					onClick={() => signIn()}
+					onClick={() => signIn('google',{callbackUrl:'/app/dashboard'})}
 				>
 					Sign in with Google
 				</Button>

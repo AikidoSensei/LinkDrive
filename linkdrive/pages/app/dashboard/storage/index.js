@@ -68,7 +68,7 @@ const Storage = () => {
 			getUserStorageInfo(session.user.email)
 		}
 		else{
-			router.push('/')
+			router.push('/login')
 		}
 	}, [session, refreshTrigger])
 	

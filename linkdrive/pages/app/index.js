@@ -15,7 +15,7 @@ const index = () => {
  const router = useRouter()
 useEffect(()=>{
  if(!session){
-  router.push('/login')
+  router.push('/auth/login')
  }
  else{setTimeout(
   ()=>router.push('/app/dashboard'), 5000)}
