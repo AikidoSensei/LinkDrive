@@ -26,12 +26,15 @@ const login = () => {
 			</Head>
 
 			<motion.div
-				className='bg-white p-10 rounded-xl shadow-xl flex flex-col items-center w-80 sm:w-96'
+				className='bg-black border border-white/80 p-10 rounded-xl shadow-xl flex flex-col items-center w-80 sm:w-96 bg-[radial-gradient(94%_98%_at_100%_100%,_#0b7f3f_-90%,_rgb(0,3,15)_100%)]'
 				initial={{ opacity: 0, scale: 0.8 }}
 				animate={{ opacity: 1, scale: 1 }}
 				transition={{ duration: 0.3 }}
 			>
-				<a href='/'>
+				<a
+					href='/'
+					className='bg-white w-20 flex justify-center items-center rounded-full'
+				>
 					<Lottie
 						animationData={link2}
 						autoplay={true}
@@ -39,15 +42,18 @@ const login = () => {
 						className=' w-[60px] md:w-[150px] '
 					/>
 				</a>
-				<h1 className='text-2xl font-bold text-center mb-6 text-black'>
-					Welcome Back to <a href='/'><span className='text-green-400'>LinkDrive</span></a>
+				<h1 className='text-2xl font-bold text-center mb-6 text-white'>
+					Welcome Back to{' '}
+					<a href='/'>
+						<span className='text-green-400'>LinkDrive</span>
+					</a>
 				</h1>
-				<p className='text-sm text-center text-black/60 mb-6'>
+				<p className='text-sm text-center text-white/60 mb-6'>
 					Please sign in to continue to your all-in-one storage platform.
 				</p>
 				<Button
-					className='bg-green-500 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-xl hover:bg-green-400 transition duration-300 ease-in-out w-full'
-					onClick={() => signIn('google',{callbackUrl:'/app/dashboard'})}
+					className='bg-green-400 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-xl hover:bg-green-400 transition duration-300 ease-in-out w-full'
+					onClick={() => signIn('google', { callbackUrl: '/app/dashboard' })}
 				>
 					Sign in with Google
 				</Button>

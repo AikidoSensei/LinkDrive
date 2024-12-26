@@ -9,7 +9,7 @@ import { useState } from 'react'
 import StorageInfo from '@/components/parentcomponents/StrorageInfo/StorageInfo'
 import { BreadCrumbContext } from '@/context/BreadCrumbContext'
 
-import { Roboto, Lato, Poppins, Montserrat, Inter } from 'next/font/google'
+import { Roboto, Lato, Poppins, Montserrat, Inter, Geist, Geist_Mono } from 'next/font/google'
 import { UsedContext } from '@/context/UsedContext'
 
 const roboto = Roboto({
@@ -32,6 +32,16 @@ const poppins = Poppins({
 	weight: '400',
 	subsets: ['latin'],
 })
+const geistSans = Geist({
+	variable: '--font-geist-sans',
+	subsets: ['latin'],
+})
+const geistMono = Geist_Mono({
+	variable: '--font-geist-mono',
+	subsets: ['latin'],
+})
+
+
 export default function App({
 	Component,
 	pageProps: { session, ...pageProps },
@@ -49,7 +59,7 @@ const getLayout = Component.getLayout || ((page) => page)
 				<RefreshContext.Provider value={{ refreshTrigger, setRefreshTrigger }}>
 					<BreadCrumbContext.Provider value={{ crumb, setCrumb }}>
 						<UsedContext.Provider value={{ usedMemory, setUsedMemory }}>
-							<main className={`${lato.className} overflow-x-hidden`}>
+							<main className={`${geistSans.className} overflow-x-hidden`}>
 								<SidebarProvider>
 									{getLayout(<Component {...pageProps} />)}
 								</SidebarProvider>
