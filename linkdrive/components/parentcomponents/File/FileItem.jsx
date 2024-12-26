@@ -52,14 +52,14 @@ const FileItem = ({ file, view }) => {
 	}
 	// format file size function
 	const formatFileSize = (bytes) => {
-		if (bytes < 1024) {
+		if (bytes < 1000) {
 			return `${bytes} Bytes`
-		} else if (bytes < 1024 ** 2) {
-			return `${(bytes / 1024).toFixed(2)} KB`
-		} else if (bytes < 1024 ** 3) {
-			return `${(bytes / 1024 ** 2).toFixed(2)} MB`
+		} else if (bytes < 1000 ** 2) {
+			return `${(bytes / 1000).toFixed(2)} KB`
+		} else if (bytes < 1000 ** 3) {
+			return `${(bytes / 1000 ** 2).toFixed(2)} MB`
 		} else {
-			return `${(bytes / 1024 ** 3).toFixed(2)} GB`
+			return `${(bytes / 1000 ** 3).toFixed(2)} GB`
 		}
 	}
 	// handle starring
@@ -142,9 +142,9 @@ const handleTrash = async (id, trash) => {
 							className={`'text-center text-ellipsis ' ${
 								view === 'icons'
 									? 'text-xs text-center line-clamp-2 '
-									: 'w-[100px] lg:w-[200px] text-xs lg:text-sm overflow-hidden text-ellipsis line-clamp-1'
+									: 'w-[100px] lg:w-[200px] text-xs lg:text-sm overflow-hidden line-clamp-1 z-10'
 							}`}
-							onClick={() => window.open(file.imageUrl)}
+							onClick={() => window.open(file.imageUrl)}d
 						>
 							{file.name}
 						</p>
@@ -191,7 +191,10 @@ const handleTrash = async (id, trash) => {
 					side='right'
 					align='start'
 				>
-					<DropdownMenu.Item className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md mb-1 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer '>
+					<DropdownMenu.Item
+						className='flex items-center gap-2 py-1 px-4 w-full outline-none rounded-md mb-1 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer '
+						onClick={() => window.open(file.imageUrl)}
+					>
 						<PackageOpen strokeWidth={1} size={18} /> Open File
 					</DropdownMenu.Item>
 					<Separator />
@@ -223,7 +226,7 @@ const handleTrash = async (id, trash) => {
 							path={file.imageUrl}
 							name={file.name}
 							id={file.id}
-							trash={()=>handleTrash(file.id, file.trash)}
+							trash={() => handleTrash(file.id, file.trash)}
 							trashState={file.trash}
 							fileSize={file.size}
 						/>
@@ -411,4 +414,5 @@ const PptIcon = ()=>{
 		</svg>
 	)
 }
+export {ImageIcon, PdfIcon, DocIcon, AudioIcon, PptIcon}
 export default FileItem

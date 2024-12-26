@@ -152,7 +152,6 @@ const formatedSize = formatSize(usedMemory?.storageLimit)
 		}
 	}
 	const handleClearStarred = async () => {
-		console.log('clearing starred')
 		if (!session) {
 			toast({
 				title: 'Error',

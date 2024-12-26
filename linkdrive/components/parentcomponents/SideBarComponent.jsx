@@ -59,7 +59,7 @@ const SideBarComponent = () => {
 	const { usedMemory, setUsedMemory } = useContext(UsedContext)
 	const formatSize = (usedUp) => {
 		if (usedUp < 1000) {
-			return `${usedUp} Bytes`
+			return `${usedUp} MB`
 		} else if (usedUp < 1000 ** 2) {
 			return `${(usedUp / 1000).toFixed(2)} KB`
 		} else if (usedUp < 1000 ** 3) {
@@ -73,20 +73,20 @@ const SideBarComponent = () => {
 	const [open, setOpen] = useState(false)
 	return (
 		<Sidebar className='border-0 bg-white'>
-			<SidebarHeader className='border-b'>
+			<SidebarHeader className='border-b h-14'>
 				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton size='lg' asChild>
+					<SidebarMenuItem className=''>
+						<SidebarMenuButton asChild>
 							<a href='#'>
-								<div className='p-1 rounded-xl'>
+								<div className=''>
 									<img
 										src='/linkdrive-logo.png'
 										alt='LinkDrive Logo'
-										width={50}
-										height={50}
+										width={40}
+										height={40}
 									/>
 								</div>
-								<p className='text-3xl font-bold text-black'>LinkDrive</p>
+								<p className='text-3xl font-bold text-black'>link<span className='text-green-500'>drive</span></p>
 							</a>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
@@ -136,8 +136,10 @@ const SideBarComponent = () => {
 								</SidebarMenuItem>
 							))}
 							<SidebarMenuItem
-								className={
-									' h-8 flex items-center justify-between px-3 rounded-md transition-all duration-200 hover:bg-black/5 cursor-pointer '
+								className={`
+									 h-8 flex items-center justify-between px-3 rounded-md transition-all duration-200 hover:bg-black/5 cursor-pointer  ${
+											router.pathname === '/app/dashboard/storage' &&
+											`bg-green-500/15 before:content-[''] before:absolute before:left-[3px] before:top-0 before:bottom-0 before:w-1.5 before:h-full before:scale-50 before:rounded-lg before:bg-black`}`
 								}
 								onClick={()=>setOpen(!open)}
 							>
@@ -158,6 +160,11 @@ const SideBarComponent = () => {
 											<motion.div key={'bar'} initial={{scaleX:0}} animate={{scaleX:1}} transition={{delay:0.2, duration:1, type:'tween'}} style={{width:barWidth}} className={` bg-green-500 h-full rounded-full origin-left`}></motion.div>
 											</div>
 											<p className='mt-2'>{formatSize(usedMemory.storageUsed)} of {formatSize(usedMemory.storageLimit)} used</p>
+											<Link href='/app/dashboard/storage' className='w-full h-10 border rounded-xl flex items-center justify-center' 
+											
+											>
+												view more
+											</Link>
 										</div>
 									</motion.div>}
 								</AnimatePresence>

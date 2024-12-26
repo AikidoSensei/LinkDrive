@@ -36,7 +36,6 @@ const DeleteFolderModal = ({folderId, name}) => {
 	const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
 
 	const handleDeleteFolder = async ( id, path ) => {
-  console.log(id, path)
 		if (!id) {
 			toast({
 				variant: 'destructive',
@@ -56,7 +55,6 @@ const DeleteFolderModal = ({folderId, name}) => {
 					</ToastAction>
 				),
 			})
-			// Step 1: Delete all files in the current folder from Firestore and Supabase
 			const filesQuery = query(
 				collection(db, 'Files'),
 				where('parentFolderId', '==', id)
@@ -65,11 +63,11 @@ const DeleteFolderModal = ({folderId, name}) => {
 
 			for (const fileDoc of filesSnapshot.docs) {
 				const fileData = fileDoc.data()
-				const filePath = fileData.path // Supabase file path (e.g., 'linkdrive-storage/file1.pdf')
+				const filePath = fileData.path 
 
-				// Delete file from Supabase Storage
+
 				const { error: supabaseError } = await supabase.storage
-					.from('linkdrive-storage') // Replace with your Supabase bucket name
+					.from('linkdrive-storage') 
 					.remove([filePath])
 
 				if (supabaseError) {
@@ -93,13 +91,10 @@ const DeleteFolderModal = ({folderId, name}) => {
      return null
 				} 
 
-				// delete file document from Firestore
 				await deleteDoc(doc(db, 'Files', fileDoc.id))
-				console.log(`Deleted file document: ${fileDoc.id}`)
 // •••••••••••••••loading
 			}
-			// Step 2: Find all subfolders of the current folder
-			console.log(`Finding subfolders of folder: ${id}`)
+
 			const subfoldersQuery = query(
 				collection(db, 'Folders'),
 				where('parentFolderId', '==', id)
@@ -107,15 +102,11 @@ const DeleteFolderModal = ({folderId, name}) => {
 			)
 			const subfoldersSnapshot = await getDocs(subfoldersQuery)
 
-			// Recursively delete each subfolder
 			for (const subfolderDoc of subfoldersSnapshot.docs) {
 				await handleDeleteFolder(subfolderDoc.id)
 			}
 
-			// Step 3: Delete the current folder document
-			console.log(`Deleting folder: ${id}`)
 			await deleteDoc(doc(db, 'Folders', id))
-			console.log(`Deleted folder document: ${id}`)
    toast({
 			variant: 'default',
 			title: 'Folder Deleted Successfully',

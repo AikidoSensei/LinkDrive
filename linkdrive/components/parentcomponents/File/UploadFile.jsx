@@ -36,7 +36,6 @@ const UploadFile = () => {
 
 	const handleUpload = async (file) => {
 		setLoading(true)
-		console.log(file)
 		if (!file) {
 			setLoading(false)
 			toast({

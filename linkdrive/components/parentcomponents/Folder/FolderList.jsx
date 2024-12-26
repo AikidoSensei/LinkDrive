@@ -14,7 +14,7 @@ import { Loading2 } from '../File/FileList'
 const FolderList = ({ data, success, loading, error, title, config }) => {
 	const router = useRouter()
   const [view, setView] = useState('icons')
-		
+		const [all, setAll] = useState(true)
 	 useEffect(() => {
 			if (config?.view === true) {
 				setView('icons') 
@@ -24,7 +24,6 @@ const FolderList = ({ data, success, loading, error, title, config }) => {
 		}, [config])
 		
 		const {parentFolderId, setParentFolderId} = useContext(ParentFolderContext)
-		console.log('Folderlist:',parentFolderId)
 
 const folderClick = (item)=>{
 	setParentFolderId(item.id)
@@ -33,7 +32,6 @@ const folderClick = (item)=>{
 		name:item.name
 	}})
 }
-console.log(router)
 	return (
 		<div className='p-2 lg:p-5 bg-white flex flex-col gap-0 min-h-[320px] h-max overflow-y-hidden '>
 			<div className='flex justify-between items-center'>
@@ -42,10 +40,11 @@ console.log(router)
 				</p>
 				<div className='flex items-center gap-4 text-black'>
 					<div
-						className={` p-1 lg:p-2 rounded-full hover:bg-blue-500/20 hover:text-black ${
-							view === 'list' ? 'bg-blue-500/20' : 'bg-white'
+						className={` p-1 lg:p-2 rounded-full hover:bg-green-500/20 hover:text-black ${
+							view === 'list' ? 'bg-green-500/20' : 'bg-white'
 						}`}
-						onClick={() => setView('list')}>
+						onClick={() => setView('list')}
+					>
 						<ToolTip
 							text={'List layout'}
 							item={
@@ -60,8 +59,8 @@ console.log(router)
 						/>
 					</div>
 					<div
-						className={`p-1 lg:p-2 rounded-full hover:bg-blue-500/20 hover:text-black ${
-							view === 'icons' ? 'bg-blue-500/20 ' : 'bg-white'
+						className={`p-1 lg:p-2 rounded-full hover:bg-green-500/20 hover:text-black ${
+							view === 'icons' ? 'bg-green-500/20 ' : 'bg-white'
 						} `}
 						onClick={() => setView('icons')}
 					>
@@ -78,8 +77,11 @@ console.log(router)
 							view={view}
 						/>
 					</div>
-					<a className='float-right bg-green-500 p-1 lg:p-2 rounded-md  text-white text-xs'>
-						View All
+					<a
+						className='float-right bg-green-500 p-1 lg:p-2 rounded-md  text-white text-xs w-16 cursor-pointer flex justify-center items-center'
+						onClick={() => setAll(!all)}
+					>
+						{all ? 'View All' : 'Recent'}
 					</a>
 				</div>
 			</div>
@@ -108,12 +110,16 @@ console.log(router)
 							{data.map((item, index) => {
 								return (
 									<div
-									key={index}
+										key={index}
 										onClick={() => {
 											folderClick(item)
 										}}
 									>
-										<FolderItem folder={item} view={view} icon={config?.defaultFolder} />
+										<FolderItem
+											folder={item}
+											view={view}
+											icon={config?.defaultFolder}
+										/>
 									</div>
 								)
 							})}

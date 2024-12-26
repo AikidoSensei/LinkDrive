@@ -13,7 +13,7 @@ const FileList = ({data, loading, error, success, config}) => {
 	const [filteredFolders, setFilteredFolders] = useState([])
 	
 	const [view, setView] = useState('icons')
-	
+	const [all, setAll] = useState(true)
 	useEffect(() => {
 	const filter = data.filter((folder) => folder.trash === false)
 setFilteredFolders(filter)
@@ -31,9 +31,9 @@ setFilteredFolders(filter)
 				</p>
 				<div className='flex items-center gap-4 text-black'>
 					<div
-						className={`p-1 lg:p-2 rounded-full hover:bg-black/10 hover:text-black ${
-							view === 'list' ? 'bg-black/20' : 'bg-white'
-						} `}
+						className={` p-1 lg:p-2 rounded-full hover:bg-green-500/20 hover:text-black ${
+							view === 'list' ? 'bg-green-500/20' : 'bg-white'
+						}`}
 						onClick={() => setView('list')}
 					>
 						<ToolTip
@@ -46,8 +46,8 @@ setFilteredFolders(filter)
 						/>
 					</div>
 					<div
-						className={`p-1 lg:p-2 rounded-full hover:bg-black/10 hover:text-black ${
-							view === 'icons' ? 'bg-black/20 ' : 'bg-white'
+						className={`p-1 lg:p-2 rounded-full hover:bg-green-500/20 hover:text-black ${
+							view === 'icons' ? 'bg-green-500/20 ' : 'bg-white'
 						} `}
 						onClick={() => setView('icons')}
 					>
@@ -64,8 +64,11 @@ setFilteredFolders(filter)
 							view={view}
 						/>
 					</div>
-					<a className='float-right bg-green-500 p-1 lg:p-2 rounded-md  text-white text-xs'>
-						View All
+					<a
+						className='float-right bg-green-500 p-1 lg:p-2 rounded-md  text-white text-xs w-16 cursor-pointer flex justify-center itemc'
+						onClick={() => setAll(!all)}
+					>
+						{all ? 'View All' : 'Recent'}
 					</a>
 				</div>
 			</div>

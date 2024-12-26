@@ -1,16 +1,28 @@
 'use client'
 import { Skeleton } from '@/components/ui/skeleton'
 import { UsedContext } from '@/context/UsedContext'
-import { AudioLines, File, Image, List, Video } from 'lucide-react'
+import {
+	AudioLines,
+	File,
+	Files,
+	FileType,
+	Image,
+	List,
+	Music,
+	Video,
+} from 'lucide-react'
 import React, { useContext, useEffect } from 'react'
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
+import { RefreshContext } from '@/context/RefreshContext'
 const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
-	console.log(used, limit)
+	const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
 	const { usedMemory, setUsedMemory } = useContext(UsedContext)
 	const { documents, images, audio, others } = files
 	const percentageConverter = (bytes, denominator) => {
 		return (bytes / denominator) * 100
 	}
+
+
 	let DOCUMENT_PERCENTAGE = percentageConverter(eachSize.documents, 50000000)
 	let IMAGE_PERCENTAGE = percentageConverter(eachSize.images, 50000000)
 	let AUDIO_PERCENTAGE = percentageConverter(eachSize.audio, 50000000)
@@ -28,7 +40,7 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 
 	const formatFileSize = (bytes) => {
 		if (bytes < 1000) {
-			return `${bytes} Bytes`
+			return `${bytes} MB`
 		} else if (bytes < 1000 ** 2) {
 			return `${(bytes / 1000).toFixed(2)} KB`
 		} else if (bytes < 1000 ** 3) {
@@ -39,7 +51,7 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 	}
 	const formatUsed = (usedUp) => {
 		if (usedUp < 1000) {
-			return `${usedUp} Bytes`
+			return `${usedUp} MB`
 		} else if (usedUp < 1000 ** 2) {
 			return `${(usedUp / 1000).toFixed(2)} KB`
 		} else if (usedUp < 1000 ** 3) {
@@ -49,8 +61,7 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 		}
 	}
 	// code to format the sizes to appopriate mb gb kb
-	const realUsed = formatUsed(used)
-	const realLimit = formatFileSize(limit)
+
 	const docSize = formatFileSize(eachSize.documents)
 	const imageSize = formatFileSize(eachSize.images)
 	const audioSize = formatFileSize(eachSize.audio)
@@ -60,7 +71,8 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 			storageUsed: used || 0,
 			storageLimit: limit || 50 * 1000 * 1000,
 		})
-	}, [realUsed, realLimit, setUsedMemory]) 
+	}, [used, limit, setUsedMemory, refreshTrigger])
+	// console.log(eachSize)
 
 	return (
 		<React.Fragment>
@@ -71,35 +83,37 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 					<div className='flex flex-col w-full h-ful gap-y-2 rounded-xl p-2 border'>
 						{/* meter */}
 						<h1 className='text-xl lg:text-2xl line-clamp-1 font-extrabold'>
-							{realUsed} <span className='text-sm font-normal'>of </span>
-							{realLimit} <span className='text-sm font-normal'>used </span>
+							{formatUsed(used)}{' '}
+							<span className='text-sm font-normal'>of </span>
+							{formatFileSize(limit)}{' '}
+							<span className='text-sm font-normal'>used </span>
 						</h1>
 						<div className='w-full h-2.5 bg-black/5 rounded-full overflow-hidden flex'>
 							<motion.div
 								initial={{ scaleX: 0 }}
 								animate={{ scaleX: 1 }}
-								transition={{ duration: 0.2, delay:0 }}
+								transition={{ duration: 0.2, delay: 0 }}
 								className='h-full rounded-e-full  bg-violet-600 z-[4] origin-left'
 								style={{ width: DOCUMENT_PERCENTAGE }}
 							></motion.div>
 							<motion.div
 								initial={{ scaleX: 0 }}
 								animate={{ scaleX: 1 }}
-								transition={{ duration: 0.2, delay:0.2, }}
+								transition={{ duration: 0.2, delay: 0.2 }}
 								className='h-full bg-green-600 -ml-1 rounded-e-full z-[3] origin-left'
 								style={{ width: IMAGE_PERCENTAGE }}
 							></motion.div>
 							<motion.div
 								initial={{ scaleX: 0 }}
 								animate={{ scaleX: 1 }}
-								transition={{ duration: 0.2, delay:0.4 }}
+								transition={{ duration: 0.2, delay: 0.4 }}
 								className='h-full bg-yellow-400 rounded-e-full -ml-1 z-[2] origin-left'
 								style={{ width: AUDIO_PERCENTAGE }}
 							></motion.div>
 							<motion.div
 								initial={{ scaleX: 0 }}
 								animate={{ scaleX: 1 }}
-								transition={{ duration: 0.2, delay:0.6 }}
+								transition={{ duration: 0.2, delay: 0.6 }}
 								className='h-full bg-gray-400 rounded-e-full -ml-1 z-[1] origin-left'
 								style={{ width: OTHERS_PERCENTAGE }}
 							></motion.div>
@@ -149,25 +163,25 @@ const StorageDetails = ({ used, eachSize, files, loading, limit }) => {
 }
 const Documents = ({ size, length, width }) => {
 	return (
-		<div className='w-full bg-violet-300/10 p-2 rounded-xl border border-slate-2'>
+		<div className='w-full bg-violet-500/10 p-2 rounded-xl border border-slate-2'>
 			<div className='flex items-center w-full justify-between '>
 				{/* icon */}
 				<div className='flex gap-2'>
-					<div className='w-10 h-10 bg-slate-600/10 rounded-xl flex items-center justify-center'>
-						<List strokeWidth={1} size={15} />
+					<div className='w-10 h-10 bg-violet-600/20 rounded-xl flex items-center justify-center text-black'>
+						<File strokeWidth={1} size={15} />
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm font-bold'>Document</p>
+						<p className='text-sm md:text-xl font-bold'>Documents</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-md  font-extrabold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div
 					className={` h-full bg-violet-600 rounded-full`}
-					style={{ width: width}}
+					style={{ width: width }}
 				></div>
 			</div>
 		</div>
@@ -176,20 +190,20 @@ const Documents = ({ size, length, width }) => {
 
 const Images = ({ size, length, width }) => {
 	return (
-		<div className='w-full bg-green-300/10 p-2 rounded-xl border border-slate-2'>
+		<div className='w-full bg-green-500/10 p-2 rounded-xl border border-slate-2'>
 			<div className='flex items-center w-full justify-between '>
 				{/* icon */}
 				<div className='flex gap-2'>
-					<div className='w-10 h-10 bg-slate-600/10 rounded-xl flex items-center justify-center'>
+					<div className='w-10 h-10 bg-green-600/20 rounded-xl flex items-center justify-center'>
 						<Image strokeWidth={1} size={15} />
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm font-bold'>Images</p>
+						<p className='text-sm md:text-xl font-bold'>Images</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-md  font-extrabold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div
@@ -202,20 +216,20 @@ const Images = ({ size, length, width }) => {
 }
 const Audio = ({ size, length, width }) => {
 	return (
-		<div className='w-full bg-yellow-300/10 p-2 rounded-xl border border-slate-2'>
+		<div className='w-full bg-yellow-500/10 p-2 rounded-xl border border-slate-2'>
 			<div className='flex items-center w-full justify-between '>
 				{/* icon */}
 				<div className='flex gap-2'>
-					<div className='w-10 h-10 bg-slate-600/10 rounded-xl flex items-center justify-center'>
-						<AudioLines strokeWidth={1} size={15} />
+					<div className='w-10 h-10 bg-yellow-600/20 rounded-xl flex items-center justify-center'>
+						<Music strokeWidth={1} size={15} />
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm font-bold'>Audio</p>
+						<p className='text-sm md:text-xl font-bold'>Audio</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-md  font-extrabold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div
@@ -228,20 +242,20 @@ const Audio = ({ size, length, width }) => {
 }
 const Others = ({ size, length, width }) => {
 	return (
-		<div className='w-full bg-gray-300/10 p-2 rounded-xl border border-slate-2'>
+		<div className='w-full bg-gray-500/10 p-2 rounded-xl border border-slate-2'>
 			<div className='flex items-center w-full justify-between '>
 				{/* icon */}
 				<div className='flex gap-2'>
 					<div className='w-10 h-10 bg-slate-600/10 rounded-xl flex items-center justify-center'>
-						<File strokeWidth={1} size={15} />
+						<Files strokeWidth={1} size={15} />
 					</div>
 					{/* info */}
 					<div className='flex flex-col '>
-						<p className='text-sm font-bold'>Others</p>
+						<p className='text-sm md:text-xl font-bold'>Others</p>
 						<p className='text-xs'>{length} Files</p>
 					</div>
 				</div>
-				<h1 className='text-sm md:text-md  font-extrabold '>{size}</h1>
+				<h1 className='text-sm md:text-xl  font-bold '>{size}</h1>
 			</div>
 			<div className='w-full h-1 flex bg-black/5 rounded-full overflow-hidden mt-4'>
 				<div
@@ -252,22 +266,22 @@ const Others = ({ size, length, width }) => {
 		</div>
 	)
 }
-const Loading = ()=>{
-  return (
-    <div className='w-full h-full flex flex-col p-4 mt-10  gap-2'>
-      <Skeleton className='h-20 w-full p-2'/>
-      <Skeleton className='h-2 w-full p-2 rounded-full'/>
-      <div className='w-full flex justify-between items-center gap-2'>
-        <Skeleton className='h-10 w-full'/>
-        <Skeleton className='h-10 w-full'/>
-        <Skeleton className='h-10 w-full'/>
-        <Skeleton className='h-10 w-full'/>
-      </div>
-      <Skeleton className='h-20 w-full p-2'/>
-      <Skeleton className='h-20 w-full p-2'/>
-      <Skeleton className='h-20 w-full p-2'/>
-      <Skeleton className='h-20 w-full p-2'/>
-    </div>
-  )
+const Loading = () => {
+	return (
+		<div className='w-full h-full flex flex-col p-4 mt-10  gap-2'>
+			<Skeleton className='h-20 w-full p-2' />
+			<Skeleton className='h-2 w-full p-2 rounded-full' />
+			<div className='w-full flex justify-between items-center gap-2'>
+				<Skeleton className='h-10 w-full' />
+				<Skeleton className='h-10 w-full' />
+				<Skeleton className='h-10 w-full' />
+				<Skeleton className='h-10 w-full' />
+			</div>
+			<Skeleton className='h-20 w-full p-2' />
+			<Skeleton className='h-20 w-full p-2' />
+			<Skeleton className='h-20 w-full p-2' />
+			<Skeleton className='h-20 w-full p-2' />
+		</div>
+	)
 }
 export default StorageDetails

@@ -65,7 +65,6 @@ const Starred = () => {
 			fetchStarredFiles()
 		}
 	}, [session, refreshTrigger])
-	console.log(data)
 	if (status === 'loading') {
 		return (
 			<div className='w-full col-span-2 flex justify-center items-center h-screen z-[1000] text-black'>

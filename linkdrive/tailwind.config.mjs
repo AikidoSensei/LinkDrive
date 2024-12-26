@@ -8,6 +8,9 @@ export default {
 	],
 	theme: {
 		extend: {
+			backgroundImage: {
+				'custom-pattern': "url('/circuit-board.webp')",
+			},
 			colors: {
 				'before-bg': 'var(--tw-before-bg)',
 				background: 'hsl(var(--background))',

@@ -41,11 +41,12 @@ const getLayout = Component.getLayout || ((page) => page)
 				<RefreshContext.Provider value={{ refreshTrigger, setRefreshTrigger }}>
 					<BreadCrumbContext.Provider value={{ crumb, setCrumb }}>
 						<UsedContext.Provider value={{ usedMemory, setUsedMemory }}>
-							<main className={`${poppins.className} overflow-x-hidden`}>
+							<main className={`${lato.className} overflow-x-hidden`}>
 								<SidebarProvider>
 									{getLayout(<Component {...pageProps} />)}
 								</SidebarProvider>
 							</main>
+									<Toaster/>
 						</UsedContext.Provider>
 					</BreadCrumbContext.Provider>
 				</RefreshContext.Provider>

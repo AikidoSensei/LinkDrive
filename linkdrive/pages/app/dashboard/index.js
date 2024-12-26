@@ -67,9 +67,8 @@ const Dashboard = () => {
 useEffect(() => {
 setCrumb('')
 	if (status === 'unauthenticated') {
-		router.push('/login')
+		router.push('/')
 	} else if (status === 'authenticated') {
-		console.log('User Session', session.user)
 		// Fetch user config and initialize state only if authenticated
 		const fetchUserConfig = async () => {
 			try {
