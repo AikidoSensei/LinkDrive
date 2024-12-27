@@ -11,6 +11,7 @@ import {
 	query,
 	updateDoc,
 	where,
+	writeBatch,
 } from 'firebase/firestore'
 import {
 	AlertDialog,
@@ -183,122 +184,139 @@ const handleClearStorage = async () => {
 		toast({
 			variant: 'destructive',
 			title: 'Failed to clear storage',
-			description: 'Please input "Clear" to clear storage',
+			description: 'Please input "Clear" to clear storage.',
 		})
 		setClear('')
 		return
-	} else {
-		const db = getFirestore(app)
-		setClear('')
-		try {
-			toast({
-				variant: 'message',
-				title: 'Clearing storage',
-				description: 'Just a moment',
-				action: (
-					<ToastAction altText='deleting' className='outline-none border-none'>
-						<Loader2 className='animate-spin' />
-					</ToastAction>
-				),
-			})
+	}
 
-			// Initialize total size variable
-			let totalSize = 0
+	const db = getFirestore(app)
+	setClear('')
 
-			// Step 1: Delete all files in Firestore and Supabase
-			const filesQuery = query(
-				collection(db, 'Files'),
-				where('createdBy', '==', session.user.email)
-			)
-			const filesSnapshot = await getDocs(filesQuery)
+	try {
+		toast({
+			variant: 'message',
+			title: 'Clearing storage',
+			description: 'Just a moment...',
+			action: (
+				<ToastAction altText='deleting' className='outline-none border-none'>
+					<Loader2 className='animate-spin' />
+				</ToastAction>
+			),
+		})
 
-			for (const fileDoc of filesSnapshot.docs) {
-				const fileData = fileDoc.data()
-				const filePath = fileData.path
+		let totalSize = 0 
 
-				// Accumulate file size
-				totalSize += fileData.size || 0
+		// Step 1: Query all files created by the user
+		const filesQuery = query(
+			collection(db, 'Files'),
+			where('createdBy', '==', session.user.email)
+		)
+		const filesSnapshot = await getDocs(filesQuery)
 
-				// Delete file from Supabase Storage
-				const { error: supabaseError } = await supabase.storage
-					.from('linkdrive-storage')
-					.remove([`files/${fileDoc.name}`])
+		// Collect file paths and IDs
+		const filesToDelete = filesSnapshot.docs.map((fileDoc) => ({
+			id: fileDoc.id,
+			name: fileDoc.data().name,
+			size: fileDoc.data().size || 0,
+		}))
 
-				if (supabaseError) {
-					console.error(
-						`Failed to delete file from Supabase: ${filePath}`,
-						supabaseError
-					)
-					toast({
-						variant: 'destructive',
-						title: `Failed to Clear storage`,
-						description: supabaseError.message,
-						action: (
-							<ToastAction
-								altText='Try again'
-								onClick={() => handleClearStorage()}
-							>
-								Try again
-							</ToastAction>
-						),
-					})
-					return null
+		// Delete files from Supabase storage
+		const supabaseResults = await Promise.all(
+			filesToDelete.map(async (file) => {
+				try {
+					const { error } = await supabase.storage
+						.from('linkdrive-storage')
+						.remove([`files/${file.name}`])
+					if (error) throw error
+					return { success: true }
+				} catch (err) {
+					console.error(`Supabase deletion failed for ${file.name}:`, err)
+					return { success: false, file }
 				}
-
-				await deleteDoc(doc(db, 'Files', fileDoc.id))
-			}
-
-			// Step 2: Delete all folders in Firestore
-			const folderQuery = query(
-				collection(db, 'Folders'),
-				where('createdBy', '==', session.user.email)
-			)
-			const foldersSnapshot = await getDocs(folderQuery)
-
-			for (const subfolderDoc of foldersSnapshot.docs) {
-				await deleteDoc(doc(db, 'Folders', subfolderDoc.id))
-			}
-
-			// Step 3: Update storageUsed in Users document
-			const userDocRef = doc(db, 'Users', session.user.email) 
-			await updateDoc(userDocRef, {
-				storageUsed: increment(-totalSize), // Deduct the total size from storageUsed
 			})
+		)
 
-			// Final success toast
-			toast({
-				variant: 'default',
-				title: 'Storage cleared successfully',
-				description: 'Folder has been deleted, and storage updated.',
-			})
-			setNumberOfFiles({
-				documents: 0,
-				images: 0,
-				audio: 0,
-				others: 0,
-			})
-			setSizes({
-				documents: 0,
-				images: 0,
-				audio: 0,
-				others: 0,
-			})
-			setRefreshTrigger(!refreshTrigger)
-		} catch (error) {
-			console.error(`Error clearing storage`, error)
+		// Filter out failed deletions
+		const failedDeletions = supabaseResults.filter((res) => !res.success)
+
+		if (failedDeletions.length > 0) {
 			toast({
 				variant: 'destructive',
-				title: 'Error',
-				description: error.message,
-				action: (
-					<ToastAction altText='Try again' onClick={() => handleClearStorage()}>
-						Try again
-					</ToastAction>
-				),
+				title: 'Failed to clear storage',
+				description: `Some files could not be deleted from Supabase: ${failedDeletions
+					.map((res) => res.file.name)
+					.join(', ')}`,
 			})
+			return
 		}
+
+		totalSize = filesToDelete.reduce((acc, file) => acc + file.size, 0)
+		const batch = writeBatch(db)
+
+		filesSnapshot.docs.forEach((fileDoc) => {
+			batch.delete(doc(db, 'Files', fileDoc.id))
+		})
+
+		await batch.commit()
+
+		// Step 2: Delete folders in Firestore
+		const folderQuery = query(
+			collection(db, 'Folders'),
+			where('createdBy', '==', session.user.email)
+		)
+		const foldersSnapshot = await getDocs(folderQuery)
+
+		const folderBatch = writeBatch(db)
+		foldersSnapshot.docs.forEach((folderDoc) => {
+			folderBatch.delete(doc(db, 'Folders', folderDoc.id))
+		})
+
+		await folderBatch.commit()
+
+		// Step 3: Update storageUsed in Users document
+		const userDocRef = doc(db, 'Users', session.user.email)
+		await updateDoc(userDocRef, {
+			storageUsed: increment(-totalSize),
+		})
+
+		// Final success toast
+		toast({
+			variant: 'default',
+			title: 'Storage cleared successfully',
+			description:
+				'All files and folders have been deleted, and storage updated.',
+		})
+
+		// Reset UI state
+		setNumberOfFiles({
+			documents: 0,
+			images: 0,
+			audio: 0,
+			others: 0,
+		})
+		setSizes({
+			documents: 0,
+			images: 0,
+			audio: 0,
+			others: 0,
+		})
+		setRefreshTrigger(!refreshTrigger)
+	} catch (error) {
+		console.error('Error clearing storage:', error)
+		toast({
+			variant: 'destructive',
+			title: 'Error',
+			description: error.message,
+			action: (
+				<ToastAction altText='Try again' onClick={handleClearStorage}>
+					Try again
+				</ToastAction>
+			),
+		})
 	}
 }
+
 
 
 	return (

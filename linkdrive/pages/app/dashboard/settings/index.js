@@ -48,6 +48,7 @@ import { BreadCrumbContext } from '@/context/BreadCrumbContext'
 import { UsedContext } from '@/context/UsedContext'
 import { createClient } from '@supabase/supabase-js'
 import Head from 'next/head'
+import { RefreshContext } from '@/context/RefreshContext'
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 const supabase = createClient(
@@ -59,6 +60,7 @@ const Settings = () => {
 	const db = getFirestore(app)
 	const { data: session, status } = useSession()
 	const { crumb, setCrumb } = useContext(BreadCrumbContext)
+	const { refreshTrigger, setRefreshTrigger } = useContext(RefreshContext)
 	const [config, setConfig] = useState({
 		view: true,
 		defaultFolder: true,
@@ -244,52 +246,64 @@ const handleClearTrash = async () => {
 			return
 		}
 
-		// Initialize variables for deletion and size tracking
 		const filesToDelete = []
 		let totalSize = 0
 
-		// Collect file data for deletion and calculate total size
-		const deletePromises = querySnapshot.docs.map((fileDoc) => {
+		// Collect file names and sizes
+		querySnapshot.docs.forEach((fileDoc) => {
 			const fileData = fileDoc.data()
-			filesToDelete.push(fileData.name)
-			totalSize += fileData.size || 0 // Ensure size exists and accumulate
-			return deleteDoc(doc(db, 'Files', fileDoc.id))
+			filesToDelete.push({ id: fileDoc.id, name: fileData.name })
+			totalSize += fileData.size || 0
 		})
 
-		// Delete files from Firebase
-		await Promise.all(deletePromises)
-
-		// Delete files from Supabase
-		const supabaseDeletePromises = filesToDelete.map((fileName) =>
-			supabase.storage.from('linkdrive-storage').remove([`files/${fileName}`])
+		// Supabase delete
+		const supabaseDeleteResults = await Promise.all(
+			filesToDelete.map(async ({ name }) => {
+				try {
+					const { error } = await supabase.storage
+						.from('linkdrive-storage')
+						.remove([`files/${name}`])
+					if (error) throw error
+					return { success: true }
+				} catch (err) {
+					console.error(`Supabase deletion failed for ${name}:`, err)
+					return { success: false, name }
+				}
+			})
 		)
 
-		const supabaseResults = await Promise.all(supabaseDeletePromises)
+		// Filter failed deletions
+		const failedDeletions = supabaseDeleteResults.filter((res) => !res.success)
 
-		// Check for Supabase deletion errors
-		const supabaseErrors = supabaseResults.filter((res) => res.error)
-		if (supabaseErrors.length > 0) {
-			console.error('Supabase deletion errors:', supabaseErrors)
+		if (failedDeletions.length > 0) {
 			toast({
 				title: 'Partial Success',
-				description: 'Some files could not be deleted from Supabase.',
+				description: `Some files could not be deleted from Supabase: ${failedDeletions
+					.map((res) => res.name)
+					.join(', ')}`,
 				variant: 'destructive',
 			})
-		} else {
-			// Update storageUsed in Firebase
-			const userDocRef = doc(db, 'Users', session.user.email) // Assuming user email as doc ID
-			await updateDoc(userDocRef, {
-				storageUsed: increment(-totalSize), // Deduct the total size
-			})
-
-			toast({
-				title: 'Success',
-				description:
-					'All trash files have been successfully deleted, and storage has been updated.',
-				variant: 'default',
-			})
-			setRefreshTrigger(!refreshTrigger)
+			return
 		}
+
+		// Delete corresponding Firestore records
+		await Promise.all(
+			filesToDelete.map(({ id }) => deleteDoc(doc(db, 'Files', id)))
+		)
+
+		// Update storageUsed in Firebase
+		const userDocRef = doc(db, 'Users', session.user.email) 
+		await updateDoc(userDocRef, {
+			storageUsed: increment(-totalSize), // Deduct the total size
+		})
+
+		toast({
+			title: 'Success',
+			description:
+				'All trash files have been successfully deleted, and storage has been updated.',
+			variant: 'default',
+		})
+		setRefreshTrigger(!refreshTrigger)
 	} catch (error) {
 		console.error('Error deleting trash files:', error)
 		toast({

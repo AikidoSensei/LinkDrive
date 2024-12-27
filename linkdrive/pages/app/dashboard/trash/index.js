@@ -84,87 +84,105 @@ const Trash = () => {
 		}
 	}, [session, refreshTrigger])
 
-	const handleClearTrash = async () => {
-		try {
+const handleClearTrash = async () => {
+	try {
+		toast({
+			title: 'Deleting Files',
+			description: 'Please wait while trash files are being deleted...',
+			variant: 'message',
+			action: (
+				<ToastAction altText='deleting' className='outline-none border-none'>
+					<Loader2 className='animate-spin' />
+				</ToastAction>
+			),
+		})
+
+		// Query for trash files in Firebase
+		const trashFilesQuery = query(
+			collection(db, 'Files'),
+			where('trash', '==', true),
+			where('createdBy', '==', session.user.email)
+		)
+
+		const querySnapshot = await getDocs(trashFilesQuery)
+
+		if (querySnapshot.empty) {
 			toast({
-				title: 'Deleting Files',
-				description: 'Please wait while trash files are being deleted...',
-				variant: 'message',
-				action: (
-					<ToastAction altText='deleting' className='outline-none border-none'>
-						<Loader2 className='animate-spin' />
-					</ToastAction>
-				),
+				title: 'No Trash Files',
+				description: 'There are no files in the trash to delete.',
+				variant: 'default',
 			})
+			return
+		}
 
-			// Query for trash files in Firebase
-			const trashFilesQuery = query(
-				collection(db, 'Files'),
-				where('trash', '==', true),
-				where('createdBy', '==', session.user.email)
-			)
+		const filesToDelete = []
+		let totalSize = 0
 
-			const querySnapshot = await getDocs(trashFilesQuery)
+		// Collect file names and sizes
+		querySnapshot.docs.forEach((fileDoc) => {
+			const fileData = fileDoc.data()
+			filesToDelete.push({ id: fileDoc.id, name: fileData.name })
+			totalSize += fileData.size || 0
+		})
 
-			if (querySnapshot.empty) {
-				toast({
-					title: 'No Trash Files',
-					description: 'There are no files in the trash to delete.',
-					variant: 'default',
-				})
-				return
-			}
-
-			const filesToDelete = []
-			let totalSize = 0
-
-			const deletePromises = querySnapshot.docs.map((fileDoc) => {
-				const fileData = fileDoc.data()
-				filesToDelete.push(fileData.name)
-				totalSize += fileData.size || 0
-				return deleteDoc(doc(db, 'Files', fileDoc.id))
+		// Supabase delete
+		const supabaseDeleteResults = await Promise.all(
+			filesToDelete.map(async ({ name }) => {
+				try {
+					const { error } = await supabase.storage
+						.from('linkdrive-storage')
+						.remove([`files/${name}`])
+					if (error) throw error
+					return { success: true }
+				} catch (err) {
+					console.error(`Supabase deletion failed for ${name}:`, err)
+					return { success: false, name }
+				}
 			})
+		)
 
-			await Promise.all(deletePromises)
+		// Filter failed deletions
+		const failedDeletions = supabaseDeleteResults.filter((res) => !res.success)
 
-			const supabaseDeletePromises = filesToDelete.map((fileName) =>
-				supabase.storage.from('linkdrive-storage').remove([`files/${fileName}`])
-			)
-
-			const supabaseResults = await Promise.all(supabaseDeletePromises)
-
-			const supabaseErrors = supabaseResults.filter((res) => res.error)
-			if (supabaseErrors.length > 0) {
-				console.error('Supabase deletion errors:', supabaseErrors)
-				toast({
-					title: 'Partial Success',
-					description: 'Some files could not be deleted from Supabase.',
-					variant: 'destructive',
-				})
-			} else {
-				// Update storageUsed in Firebase
-				const userDocRef = doc(db, 'Users', session.user.email) // Assuming user email as doc ID
-				await updateDoc(userDocRef, {
-					storageUsed: increment(-totalSize), // Deduct the total size
-				})
-
-				toast({
-					title: 'Success',
-					description:
-						'All trash files have been successfully deleted, and storage has been updated.',
-					variant: 'default',
-				})
-				setRefreshTrigger(!refreshTrigger)
-			}
-		} catch (error) {
-			console.error('Error deleting trash files:', error)
+		if (failedDeletions.length > 0) {
 			toast({
-				title: 'Error',
-				description: 'Failed to delete trash files. Please try again.',
+				title: 'Partial Success',
+				description: `Some files could not be deleted from Supabase: ${failedDeletions
+					.map((res) => res.name)
+					.join(', ')}`,
 				variant: 'destructive',
 			})
+			return
 		}
+
+		// Delete corresponding Firestore records
+		await Promise.all(
+			filesToDelete.map(({ id }) => deleteDoc(doc(db, 'Files', id)))
+		)
+
+		// Update storageUsed in Firebase
+		const userDocRef = doc(db, 'Users', session.user.email) 
+		await updateDoc(userDocRef, {
+			storageUsed: increment(-totalSize), // Deduct the total size
+		})
+
+		toast({
+			title: 'Success',
+			description:
+				'All trash files have been successfully deleted, and storage has been updated.',
+			variant: 'default',
+		})
+		setRefreshTrigger(!refreshTrigger)
+	} catch (error) {
+		console.error('Error deleting trash files:', error)
+		toast({
+			title: 'Error',
+			description: 'Failed to delete trash files. Please try again.',
+			variant: 'destructive',
+		})
 	}
+}
+
 
 const handleRestoreTrash = async () => {
 	if (!session) {

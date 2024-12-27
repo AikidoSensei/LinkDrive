@@ -117,11 +117,11 @@ const handleDelete = async (name,id) => {
 					file again.
 				</AlertDialogDescription>
 			</AlertDialogHeader>
-			<AlertDialogFooter>
-				<AlertDialogAction onClick={()=>trash()}>
-				<TrashIcon/>	{trashState ? 'Remove from trash' : 'Move to trash'}
-				</AlertDialogAction>
-				<div className='w-full flex items-center justify-end gap-2 ml-10'>
+			<AlertDialogFooter className='flex'>
+					<AlertDialogAction onClick={()=>trash() }>
+					<TrashIcon/>	{trashState ? 'Remove from trash' : 'Move to trash'}
+					</AlertDialogAction>
+				<div className='w-full flex items-center justify-around gap-2'>
 					<AlertDialogCancel className='bg-black text-white outline-none hover:outline-none hover:bg-black hover:text-white'>
 						Cancel
 					</AlertDialogCancel>
@@ -129,7 +129,6 @@ const handleDelete = async (name,id) => {
 						className='bg-red-500 hover:bg-red-600 '
 						onClick={() => handleDelete(name, id)}
 					>
-						{' '}
 						<Trash2 /> Continue
 					</AlertDialogAction>
 				</div>
