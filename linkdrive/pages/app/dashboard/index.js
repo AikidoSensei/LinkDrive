@@ -192,26 +192,25 @@ return (
 )
 }
 	return (
-		<div className='w-full h-full'>
-<Head>
-	<title>Dashboard</title>
-</Head>
-					
-						<FolderList
-							data={folderList}
-							success={success}
-							error={error}
-							loading={loading}
-							config={config}
-						/>
-						<FileList
-							data={fileList}
-							success={fileSuccess}
-							error={fileError}
-							loading={fileLoading}
-							config={config}
-						/>
+		<div className='p-2 lg:p-5 mt-5 bg-white  flex flex-col gap-0 min-h-[320px] h-full'>
+			<Head>
+				<title>Dashboard</title>
+			</Head>
 
+			<FolderList
+				data={folderList}
+				success={success}
+				error={error}
+				loading={loading}
+				config={config}
+			/>
+			<FileList
+				data={fileList}
+				success={fileSuccess}
+				error={fileError}
+				loading={fileLoading}
+				config={config}
+			/>
 		</div>
 	)
 }

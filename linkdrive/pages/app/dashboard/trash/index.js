@@ -258,7 +258,7 @@ const handleRestoreTrash = async () => {
 		)
 	}
 return (
-	<div className='p-2 lg:p-5 mt-5 bg-white flex flex-col gap-0 min-h-[320px] h-full'>
+	<div className='p-2 lg:p-5 mt-5 bg-white flex flex-col gap-0 min-h-[320px] h-screen'>
 		<Head>
 			<title>Trash</title>
 		</Head>

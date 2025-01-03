@@ -18,7 +18,7 @@ const DashboardLayout = ({ children }) => {
 	
 	
 	return (
-		<div className='w-full h-full flex '>
+		<div className='w-full h-full flex'>
 			{/* side bar component note: side bar provider wraps around all components at _app.js */}
 			<SideBarComponent />
 			<div className=' w-full grid grid-col-2  md:grid-cols-3 bg-white border-black min-h-screen overflow-y-scroll'>
@@ -44,14 +44,13 @@ const DashboardLayout = ({ children }) => {
 				{/* storage container */}
 				<div
 					className={`${
-						storageOpen ? 'col-span-2 md:col-span-1' : 'md:col-span-0'
+						storageOpen ? 'col-span-2 md:col-span-1' : 'md:col-span-0 block md:hidden'
 					} h-screen hidden md:block `}
 				>
 					<StorageInfo />
 				</div>
 
-				{/* <AnimatePresence>
-					{mobile && ( */}
+		
 
 				{path === '/app/dashboard/storage'||<motion.div
 					key='mobile'

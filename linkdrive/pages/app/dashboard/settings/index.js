@@ -389,7 +389,7 @@ const handleClearTrash = async () => {
 	}
 
 	return (
-		<div className='text-black flex flex-col overflow-y-scroll '>
+		<div className='p-2 lg:p-5 mt-5 bg-white  flex flex-col gap-0 min-h-[320px] h-full text-black pb-4 '>
 			<Head>
 				<title>Settings</title>
 			</Head>
